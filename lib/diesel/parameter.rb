@@ -1,5 +1,5 @@
 class Diesel::DSL::Parameter
-  attr_reader :name
+  attr_reader :name, :opts
 
   def initialize(name, opts)
     @name = name

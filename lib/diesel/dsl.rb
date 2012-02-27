@@ -1,3 +1,9 @@
+module Diesel::DSL; end
+
+require 'diesel/parameter'
+require 'diesel/parameter_block'
+require 'diesel/endpoint'
+
 module Diesel::DSL
   # Router stores everything (per class) here
   def _router

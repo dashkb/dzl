@@ -1,4 +1,6 @@
 source "http://rubygems.org"
 
-# Specify your gem's dependencies in router.gemspec
 gemspec
+gem 'pry'
+gem 'rake'
+gem 'rspec'
