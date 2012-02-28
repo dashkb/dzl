@@ -1,24 +1,31 @@
-class Diesel::DSL::Endpoint
+require 'diesel/endpoint_dsl'
+
+class Diesel::Endpoint
+  include Diesel::EndpointDSL
   attr_reader :pblock
 
   def initialize(route, opts, router)
     @route   = route
     @opts   = opts
     @router  = router
-    @pblock  = Diesel::DSL::ParameterBlock.new(:anonymous, {}, @router)
+    @pblock  = Diesel::ParameterBlock.new(:anonymous, {}, @router)
 
     analyze_route
   end
 
-  def analyze_route
-    @route = "/#{@route}" if @route.is_a?(Symbol)
+  # Delegate to our pblock if we don't answer a method
+  @@m_respond_to = self.instance_method(:respond_to?)
+  def respond_to?(m)
+    @@m_respond_to.bind(self).call(m) || @pblock.respond_to?(m)
+  end
 
-    if params = /\/:([^\/]+)/.match(@route)
-      params[1..-1].each {|p| @pblock.required(p.to_sym, in_path: true)}
+  @@m_method_missing = self.instance_method(:method_missing)
+  def method_missing(m, *args, &block)
+    if @pblock.respond_to?(m)
+      @pblock.send(m, *args, &block)
+    else
+      @@m_method_missing.bind(self).call
     end
-
-    @route_splits = @route.split('/')
-    @route_splits.delete('')
   end
 
   def as_json(opts=nil)
@@ -43,6 +50,7 @@ class Diesel::DSL::Endpoint
     )
   end
 
+  private
   # TODO
   def headers_match(request)
     true
@@ -71,18 +79,14 @@ class Diesel::DSL::Endpoint
     end
   end
 
-  # Delegate to our pblock if we don't answer a method
-  @@m_respond_to = self.instance_method(:respond_to?)
-  def respond_to?(m)
-    @@m_respond_to.bind(self).call(m) || @pblock.respond_to?(m)
-  end
+  def analyze_route
+    @route = "/#{@route}" if @route.is_a?(Symbol)
 
-  @@m_method_missing = self.instance_method(:method_missing)
-  def method_missing(m, *args, &block)
-    if @pblock.respond_to?(m)
-      @pblock.send(m, *args, &block)
-    else
-      @@m_method_missing.bind(self).call
+    if params = /\/:([^\/]+)/.match(@route)
+      params[1..-1].each {|p| @pblock.required(p.to_sym, in_path: true)}
     end
+
+    @route_splits = @route.split('/')
+    @route_splits.delete('')
   end
 end

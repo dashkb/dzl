@@ -40,7 +40,7 @@ class EPTestApp
 end
 
 
-describe Diesel::DSL::Endpoint do
+describe Diesel::Endpoint do
   include Rack::Test::Methods
   def app
     @app ||= EPTestApp
@@ -51,7 +51,7 @@ describe Diesel::DSL::Endpoint do
       EPTestApp._router.routes.has_key?('/foos').should == true
       ep = EPTestApp._router.routes['/foos']
 
-      yay  = Rack::Request.new(Rack::MockRequest.env_for('/foos'))
+      yay = Rack::Request.new(Rack::MockRequest.env_for('/foos'))
       bad = Rack::Request.new(Rack::MockRequest.env_for('/food'))
       sad = Rack::Request.new(Rack::MockRequest.env_for('/foos/99'))
 

@@ -35,14 +35,14 @@ module Diesel::DSL
                                block_given?
 
     
-    _router[:pblocks][name] = ParameterBlock.new(name, opts, _router)
+    _router[:pblocks][name] = Diesel::ParameterBlock.new(name, opts, _router)
     _router.call_with_subject(Proc.new, _router[:pblocks][name])
   end
 
   def endpoint(name, opts = {})
     raise ArgumentError unless opts.is_a?(Hash)
 
-    _router[:endpoints][name] = Endpoint.new(name, opts, _router)
+    _router[:endpoints][name] = Diesel::Endpoint.new(name, opts, _router)
     _router.call_with_subject(Proc.new, _router[:endpoints][name]) if block_given?
   end
 
