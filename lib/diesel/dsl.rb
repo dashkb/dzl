@@ -45,4 +45,16 @@ module Diesel::DSL
     _router[:endpoints][name] = Endpoint.new(name, opts, _router)
     _router.call_with_subject(Proc.new, _router[:endpoints][name]) if block_given?
   end
+
+  def defaults(&block)
+    raise ArgumentError unless block_given?
+    # TODO
+  end
+
+  # TODO rename this method
+  # TODO actually import this pblock into other pblocks
+  def global_pblock(&block)
+    raise ArgumentError unless block_given?
+    pblock(:__default, &block)
+  end
 end

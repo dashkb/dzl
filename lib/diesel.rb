@@ -6,6 +6,8 @@ require 'diesel/response_context'
 require 'diesel/rack_interface'
 
 module Diesel
+  class NYI < StandardError; end
+
   def self.included(base)
     base.extend(DSL)
     base.extend(RackInterface)

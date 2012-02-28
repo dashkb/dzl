@@ -10,10 +10,20 @@ class Diesel::Examples::App
   end
 
   endpoint '/foo/:name' do
-    required :name
+    required :name do
+      type String
+    end
 
     handle do
-      "asked for foo #{params}"
+      "name as string"
     end
+  end
+
+  endpoint '/foo/:id' do
+    required :id do
+      type Numeric
+    end
+
+    handle {'id as numeric'}
   end
 end
