@@ -1,4 +1,7 @@
+require 'diesel/response_context/request_helpers'
+
 class Diesel::ResponseContext
+  include RequestHelpers
   attr_reader :request, :response
 
   def initialize(request, handler)

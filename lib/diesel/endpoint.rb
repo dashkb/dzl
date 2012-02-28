@@ -70,11 +70,12 @@ class Diesel::DSL::Endpoint
     @@m_respond_to.bind(self).call(m) || @pblock.respond_to?(m)
   end
 
+  @@m_method_missing = self.instance_method(:method_missing)
   def method_missing(m, *args, &block)
     if @pblock.respond_to?(m)
       @pblock.send(m, *args, &block)
     else
-      raise "the buck stops here"
+      @@m_method_missing.bind(self).call
     end
   end
 end

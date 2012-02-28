@@ -13,7 +13,7 @@ class Diesel::Examples::App
     required :name
 
     handle do
-      "asked for foo #{params[:name]}"
+      "asked for foo #{params}"
     end
   end
 end
