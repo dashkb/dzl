@@ -28,21 +28,16 @@ class Diesel::Router < Hash
   end
 
   def handle_request(request)
-    response = Rack::Response.new
-    response['Content-Type'] = 'application/json'
-
     endpoint = find_endpoint(request)
-
+    response = endpoint.handle(request)
     response.finish
   end
 
   def find_endpoint(request)
     endpoint = routes.find do |route, endpoint|
       endpoint.respond_to_request?(request)
-    end
+    end[1] rescue nil
 
-    raise 'TODO 404' unless endpoint
-
-    puts "Would handle request with #{endpoint}"
+    endpoint ? endpoint : raise('TODO 404')
   end
 end

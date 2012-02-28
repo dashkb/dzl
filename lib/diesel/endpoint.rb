@@ -28,11 +28,11 @@ class Diesel::DSL::Endpoint
     }
   end
 
-  def handle
+  def handle(request = nil)
     if block_given?
       @handler = Proc.new
-    else
-      puts 'Handling the request maybe?'
+    elsif request && @handler.is_a?(Proc)
+      Diesel::ResponseContext.new(request, @handler).respond
     end
   end
 
