@@ -37,8 +37,15 @@ class Diesel::DSL::Endpoint
   end
 
   def respond_to_request?(request)
-    request.path == @route                    ||
-    path_with_params_matches?(request.path)
+    headers_match(request) && (
+      request.path == @route  ||
+      path_with_params_matches?(request.path)
+    )
+  end
+
+  # TODO
+  def headers_match(request)
+    true
   end
 
   def path_with_params_matches?(path)
