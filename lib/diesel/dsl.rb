@@ -7,22 +7,7 @@ require 'diesel/endpoint'
 module Diesel::DSL
   # Router stores everything (per class) here
   def _router
-    if !@_router
-      @_router = {
-        pblocks: {},
-        endpoints: {},
-        stack: []
-      }
-
-      # This is no ordinary hash.
-      def @_router.call_with_subject(proc, subject)
-        self[:stack].push(subject)
-        proc.call
-        self[:stack].pop
-      end
-    end
-
-    @_router
+    @_router ||= Diesel::Router.new
   end
 
   def _subject
@@ -55,11 +40,9 @@ module Diesel::DSL
   end
 
   def endpoint(name, opts = {})
-    raise ArgumentError unless name.is_a?(Symbol) &&
-                               opts.is_a?(Hash)   &&
-                               block_given?
+    raise ArgumentError unless opts.is_a?(Hash)
 
     _router[:endpoints][name] = Endpoint.new(name, opts, _router)
-    _router.call_with_subject(Proc.new, _router[:endpoints][name].pblock)
+    _router.call_with_subject(Proc.new, _router[:endpoints][name]) if block_given?
   end
 end

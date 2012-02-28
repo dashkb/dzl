@@ -4,3 +4,5 @@ gemspec
 gem 'pry'
 gem 'rake'
 gem 'rspec'
+gem 'thin'
+gem 'rack-test'

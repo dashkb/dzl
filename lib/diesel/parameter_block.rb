@@ -3,7 +3,7 @@ class Diesel::DSL::ParameterBlock
 
   def initialize(name, opts, router)
     @name   = name
-    @opts   = opts
+    #@opts   = opts
     @router = router
     @params = {}
   end
@@ -19,12 +19,12 @@ class Diesel::DSL::ParameterBlock
     @router.call_with_subject(Proc.new, @params[name]) if block_given?
   end
 
-  def required(name, &block)
-    parameter(name, required: true, &block)
+  def required(name, opts = {}, &block)
+    parameter(name, opts.merge(required: true), &block)
   end
 
-  def optional(name, &block)
-    parameter(name, required: false, &block)
+  def optional(name, opts = {}, &block)
+    parameter(name, opts.merge(required: false), &block)
   end
 
   def import_pblock(pblock)
@@ -35,5 +35,12 @@ class Diesel::DSL::ParameterBlock
 
   def to_s
     "pblock:#{name}"
+  end
+
+  def as_json(opts=nil)
+    {
+      opts: @opts,
+      params: @params
+    }
   end
 end

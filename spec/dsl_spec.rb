@@ -30,16 +30,14 @@ describe Diesel::DSL do
       endpoint :that do
         import_pblock :first
       end
-
-      def self.router
-        @_router
-      end
     end
 
-    TestApp.router[:pblocks][:first].params[:name].opts[:required].should == true
-    TestApp.router[:pblocks][:first].params[:awesomeness].opts[:required].should == false
-    TestApp.router[:endpoints][:this].pblock.params[:awesomeness].opts[:required].should == true
-    TestApp.router[:endpoints][:that].pblock.params[:awesomeness].opts[:required].should == false
-    TestApp.router[:endpoints][:this].pblock.params[:id].instance_variable_get(:@validations)[:matches][0].should == /\d+/
+    TestApp._router.pblocks.has_key?(:first).should == true
+    TestApp._router.pblocks[:first].params.has_key?(:name).should == true
+    TestApp._router.pblocks[:first].params[:name].opts[:required].should == true
+    TestApp._router.pblocks[:first].params[:awesomeness].opts[:required].should == false
+    TestApp._router.routes[:this].pblock.params[:awesomeness].opts[:required].should == true
+    TestApp._router.routes[:that].pblock.params[:awesomeness].opts[:required].should == false
+    TestApp._router.routes[:this].pblock.params[:id].instance_variable_get(:@validations)[:matches][0].should == /\d+/
   end
 end
