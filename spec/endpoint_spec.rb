@@ -8,6 +8,7 @@ class EPTestApp
   endpoint '/foos/:name' do
     required :name do
       type String
+      size >= 20
     end
 
     optional :number do

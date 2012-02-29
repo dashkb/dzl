@@ -34,7 +34,11 @@ class Diesel::Parameter
       end
     end
 
-    true
+    # Validator classes
+    @validations.select {|k, v| v.kind_of?(Diesel::Validator)}.each do |vary|
+      name, validator = vary
+      return false unless validator.validate(input)
+    end
   end
 
   def as_json(opts=nil)

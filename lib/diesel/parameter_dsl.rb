@@ -1,6 +1,22 @@
 require 'diesel/validators/size'
 
 module Diesel::ParameterDSL
+  alias_method :orig_mm, :method_missing
+  def method_missing(m, *args, &block)
+    validator = "Diesel::Validators::#{m.to_s.camelize}".constantize rescue nil
+    if !validator
+      orig_mm(m, *args, &block)
+    else
+      @validations[m] ||= validator.new
+    end
+  end
+
+  alias_method :orig_respond_to?, :respond_to?
+  def respond_to?(m, *args, &block)
+    orig_respond_to?(m, *args, &block) ||
+    ("Diesel::Validators::#{m.to_s.camelize}".constantize rescue nil)
+  end
+
   # Currently we allow the parameter to match ANY of these,
   # perhaps we should require it to match them ALL
   # or make it configurable
@@ -14,10 +30,6 @@ module Diesel::ParameterDSL
     @validations[:allowed_values] ||= []
     ary = ary.to_a if ary.is_a?(Range) # TODO or whatever
     (@validations[:allowed_values] += ary).uniq!
-  end
-
-  def size
-    @validations[:size] ||= Diesel::Validators::Size.new
   end
 
   def type(type)
