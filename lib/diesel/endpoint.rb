@@ -13,21 +13,6 @@ class Diesel::Endpoint
     analyze_route
   end
 
-  # Delegate to our pblock if we don't answer a method
-  @@m_respond_to = self.instance_method(:respond_to?)
-  def respond_to?(m)
-    @@m_respond_to.bind(self).call(m) || @pblock.respond_to?(m)
-  end
-
-  @@m_method_missing = self.instance_method(:method_missing)
-  def method_missing(m, *args, &block)
-    if @pblock.respond_to?(m)
-      @pblock.send(m, *args, &block)
-    else
-      @@m_method_missing.bind(self).call
-    end
-  end
-
   def as_json(opts=nil)
     {
       opts: @opts,
