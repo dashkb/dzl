@@ -1,8 +1,12 @@
 module Diesel::DSL; end
+module Diesel::DSLSubjects; end
+module Diesel::DSLProxies; end
 
-require 'diesel/parameter'
-require 'diesel/parameter_block'
-require 'diesel/endpoint'
+require 'diesel/dsl_proxy'
+require 'diesel/dsl_subject'
+require 'diesel/dsl_subjects/parameter'
+require 'diesel/dsl_subjects/parameter_block'
+require 'diesel/dsl_subjects/endpoint'
 
 module Diesel::DSL
   # Router stores everything (per class) here
@@ -18,8 +22,8 @@ module Diesel::DSL
   # we want to try to call it on the object on top
   # of our stack
   def method_missing(m, *args, &block)
-    if _subject && _subject.respond_to?(m)
-      _subject.send(m, *args, &block)
+    if _subject && _subject.dsl_proxy && _subject.dsl_proxy.respond_to?(m)
+      _subject.dsl_proxy.send(m, *args, &block)
     else
       raise "Diesel could not find a responder for #{m}, stack is #{_router[:stack].reverse}"
     end
@@ -35,14 +39,14 @@ module Diesel::DSL
                                block_given?
 
     
-    _router[:pblocks][name] = Diesel::ParameterBlock.new(name, opts, _router)
+    _router[:pblocks][name] = Diesel::DSLSubjects::ParameterBlock.new(name, opts, _router)
     _router.call_with_subject(Proc.new, _router[:pblocks][name])
   end
 
   def endpoint(name, opts = {})
     raise ArgumentError unless opts.is_a?(Hash)
 
-    _router[:endpoints][name] = Diesel::Endpoint.new(name, opts, _router)
+    _router[:endpoints][name] = Diesel::DSLSubjects::Endpoint.new(name, opts, _router)
     _router.call_with_subject(Proc.new, _router[:endpoints][name]) if block_given?
   end
 

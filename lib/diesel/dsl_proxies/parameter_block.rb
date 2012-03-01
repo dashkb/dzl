@@ -1,16 +1,16 @@
-module Diesel::ParameterBlockDSL
+class Diesel::DSLProxies::ParameterBlock < Diesel::DSLProxy
   def parameter(*names)
     opts = names.last.is_a?(Hash) ? names.pop : {required: false}
 
     names.each do |name|
-      if @params[name]
+      if @subject.params[name]
         # Don't clobber params we already know about
-        @params[name].overwrite_opts(opts)
+        @subject.params[name].overwrite_opts(opts)
       else
-        @params[name] = Diesel::Parameter.new(name, opts)
+        @subject.params[name] = Diesel::DSLSubjects::Parameter.new(name, opts)
       end
 
-      @router.call_with_subject(Proc.new, @params[name]) if block_given?
+      @subject.router.call_with_subject(Proc.new, @subject.params[name]) if block_given?
     end
   end
   alias_method :param, :parameter
@@ -37,14 +37,14 @@ module Diesel::ParameterBlockDSL
 
   def forbid(*names)
     names.each do |name|
-      @params.delete(name)
+      @subject.params.delete(name)
     end
   end
 
   def import_pblock(*pblocks)
     pblocks.each do |pblock|
-      @router[:pblocks][pblock].params.each do |name, param|
-        @params[name] = param.dup
+      @subject.router[:pblocks][pblock].params.each do |name, param|
+        @subject.params[name] = param.dup
       end
     end
   end

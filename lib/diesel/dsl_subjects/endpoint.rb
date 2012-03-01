@@ -1,15 +1,15 @@
-require 'diesel/endpoint_dsl'
+require 'diesel/dsl_proxies/endpoint'
 
-class Diesel::Endpoint
-  include Diesel::EndpointDSL
+class Diesel::DSLSubjects::Endpoint < Diesel::DSLSubject
   attr_reader :pblock
 
   def initialize(route, opts, router)
     @route   = route
     @opts   = opts
     @router  = router
-    @pblock  = Diesel::ParameterBlock.new(:anonymous, {}, @router)
-    @pblock.import_pblock(:__default)
+    @pblock  = Diesel::DSLSubjects::ParameterBlock.new(:anonymous, {}, @router)
+    @pblock.dsl_proxy.import_pblock(:__default)
+    @dsl_proxy = Diesel::DSLProxies::Endpoint.new(self)
 
     analyze_route
   end
