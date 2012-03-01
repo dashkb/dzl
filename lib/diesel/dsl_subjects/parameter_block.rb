@@ -12,7 +12,7 @@ class Diesel::DSLSubjects::ParameterBlock < Diesel::DSLSubject
   end
 
   def validate(parandidates)
-    @params.each_with_object({}) do |pary, errors|
+    errors = @params.each_with_object({}) do |pary, errors|
       pname, param = pary
 
       # verror = value or error.
@@ -23,6 +23,15 @@ class Diesel::DSLSubjects::ParameterBlock < Diesel::DSLSubject
         parandidates[pname] = verror.value unless verror.value.nil?
       end
     end || {}
+
+    parandidates.each do |pname, value|
+      unless @params.keys.include?(pname)
+        parandidates.delete(pname)
+        errors[pname] = :unknown_param
+      end
+    end
+
+    errors
   end
 
   def to_s

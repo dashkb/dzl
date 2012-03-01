@@ -80,14 +80,14 @@ class Diesel::Examples::App
     forbid :page_ids, :since, :until, :interval, :limit, :sort, :order
   end
 
-  endpoint '/post_insights' do
-    required :page_ids do
-      size <= 5
-    end
+  # endpoint '/post_insights' do
+  #   required :page_ids do
+  #     size <= 5
+  #   end
 
-    required :metrics, :since, :until
-    forbid :post_ids, :interval, :limit, :sort, :order
-  end
+  #   required :metrics, :since, :until
+  #   forbid :post_ids, :interval, :limit, :sort, :order
+  # end
 
   endpoint '/posts' do
     required :page_ids, :metrics
@@ -95,9 +95,9 @@ class Diesel::Examples::App
     forbid :post_ids
   end
 
-  endpoint '/posts' do
-    required :post_ids, :metrics
-    optional :since, :until, :limit, :sort, :order
-    forbid :page_ids
-  end
+  # endpoint '/posts' do
+  #   required :post_ids, :metrics
+  #   optional :since, :until, :limit, :sort, :order
+  #   forbid :page_ids
+  # end
 end

@@ -43,6 +43,13 @@ describe 'trey support' do
       end
     end
 
+    it "responds 404 if extra, unknown parameters are provided" do
+      get('/page_insights', req_params.merge(foo: 'bar')) do |response|
+        JSON.parse(response.body).has_key?('foo').should == false
+        response.status.should == 404
+      end
+    end
+
     it "responds 200 to a request with required parameters provided" do
       get('/page_insights', req_params) do |response|
         response.status.should == 200
@@ -114,6 +121,7 @@ describe 'trey support' do
 
     it "transforms params prior to validation" do
       get('/posts', req_params.merge(sort:'m1', order:'ASC')) do |response|
+        #puts JSON.parse(response.body)['errors']['/posts']
         response.status.should == 200
         JSON.parse(response.body)['order'].should == 'asc'
       end
