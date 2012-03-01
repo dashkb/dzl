@@ -5,21 +5,21 @@ class Diesel::Examples::App
   METRIC_NAMES_OR_WHATEVER = %w{m1 m2 m3 m4 m5 m6}
 
   # this could be handy
-  defaults do
-    type Array do
-      unique
-      separator ' '
-    end
-  end
+  # defaults do
+  #   type Array do
+  #     unique
+  #     separator ' '
+  #   end
+  # end
 
   # global parameter block applies to all routes
   # each route gets it's own copy, so, they can 
   # mess with the predefined parameters as much as
   # they'd like
   global_pblock do
-    required_header :api_key do
-      validate_with { |key| key == 'open sesame' }
-    end
+    # required_header :api_key do
+    #   validate_with { |key| key == 'open sesame' }
+    # end
 
     param :page_ids do
       type Array
@@ -37,7 +37,7 @@ class Diesel::Examples::App
     end
 
     param :since, :until do
-      type Time
+      #type Time
     end
 
     param :interval do

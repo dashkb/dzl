@@ -12,23 +12,39 @@ class Diesel::Parameter
     }
   end
 
+  def param_type
+    @validations[:type]
+  end
+
   def overwrite_opts(opts)
     @opts = opts
   end
 
-  def type_valid?(input)
-    if @validations[:type] == Numeric
-      input.to_i.to_s == input
-    elsif @validations[:type] == String
-      true
-    end
-  end
 
+  # Returns a symbol describe the error if error,
+  # returns the transformed value if not
+  # TODO symbol values?
   def validation_error(input)
     # Validate type
     return nil if !@opts[:required] && input.nil?
     return :missing_required_param if @opts[:required] && input.nil?
-    return :type_mismatch unless type_valid?(input)
+
+    # Try to convert to expected type
+    begin
+      if param_type == String
+        input = input.to_s
+      elsif param_type == Array
+        input = input.split(' ')
+      elsif param_type == Numeric
+        numerified = input.to_i.to_s
+        raise unless numerified == input
+        input = input.to_i
+      end
+    rescue StandardError => e
+      return :type_conversion_error
+    end
+
+    return :type_mismatch unless input.is_a?(param_type)
 
     # Validate regex matches
     if input.is_a?(String) && @validations.has_key?(:matches)
@@ -50,7 +66,7 @@ class Diesel::Parameter
       return :validator_object_failed unless validator.validate(input)
     end
 
-    nil
+    input
   end
 
   def as_json(opts=nil)

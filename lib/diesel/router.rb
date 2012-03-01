@@ -39,7 +39,8 @@ class Diesel::Router < Hash
       params, _errors = endpoint.params_and_errors(request)
       if _errors.empty?
         # use our validated/transformed/params
-        request.params.merge!(params).symbolize_keys!
+        _params = Proc.new { params.symbolize_keys }
+        (class << request; self; end).send(:define_method, :params, &_params)
         true
       else
         errors[route] = _errors

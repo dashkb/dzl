@@ -15,8 +15,11 @@ class Diesel::ParameterBlock
     @params.each_with_object({}) do |pary, errors|
       pname, param = pary
 
-      if verror = @params[pname].validation_error(parandidates[pname])
+      # verror = value or error.
+      if (verror = @params[pname].validation_error(parandidates[pname])).is_a?(Symbol)
         errors[pname] = verror
+      else
+        parandidates[pname] = verror if verror
       end
     end || {}
   end

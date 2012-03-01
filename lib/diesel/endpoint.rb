@@ -9,6 +9,7 @@ class Diesel::Endpoint
     @opts   = opts
     @router  = router
     @pblock  = Diesel::ParameterBlock.new(:anonymous, {}, @router)
+    @pblock.import_pblock(:__default)
 
     analyze_route
   end
