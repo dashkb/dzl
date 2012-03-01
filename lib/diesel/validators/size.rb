@@ -11,7 +11,10 @@ module Diesel::Validators
     end
 
     def validate(input)
-      true # TODO
+      return false unless input.respond_to?(:size)
+      @conditions.all? do |op, n|
+        input.size.send(op, n)
+      end
     end
 
     [:==, :<=, :>=, :<, :>].each do |op|

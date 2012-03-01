@@ -23,7 +23,7 @@ class Diesel::Examples::App
 
     param :page_ids do
       type Array
-      size <= 25
+      size <= 5
     end
 
     param :post_ids do

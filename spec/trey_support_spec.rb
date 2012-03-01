@@ -77,5 +77,14 @@ describe 'trey support' do
         errors.values.each {|v| v.should == 'type_conversion_error'}
       end
     end
+
+    it "checks array length conditions" do
+      get('/page_insights', req_params.merge(page_ids: [1, 2, 3, 4, 5, 6].join(' '))) do |response|
+        response.status.should == 404
+        errors = JSON.parse(response.body)['errors']['/page_insights']
+        errors.size.should == 1
+        errors.values.each {|v| v.should == 'validator_object_failed'}
+      end
+    end
   end
 end
