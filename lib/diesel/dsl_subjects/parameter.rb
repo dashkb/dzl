@@ -57,6 +57,12 @@ class Diesel::DSLSubjects::Parameter < Diesel::DSLSubject
       end
     end
 
+    # Validate disallowed values
+    if param_type == Array && @validations.has_key?(:disallowed_values)
+      valid =  !(input.any? { |value| @validations[:disallowed_values].include?(value) })
+      return Diesel::ValueOrError.new(:disallowed_values_failed) unless valid
+    end
+
     # Validate allowed values
     if param_type == Array && @validations.has_key?(:allowed_values)
       valid = input.all? { |value| @validations[:allowed_values].include?(value) }

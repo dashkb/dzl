@@ -33,6 +33,12 @@ class Diesel::DSLProxies::Parameter < Diesel::DSLProxy
     (@subject.validations[:allowed_values] += ary).uniq!
   end
 
+  def disallowed_values(ary)
+    @subject.validations[:disallowed_values] ||= []
+    ary = ary.to_a if ary.is_a?(Range) # TODO or whatever
+    (@subject.validations[:disallowed_values] += ary).uniq!
+  end
+
   def type(type)
     @subject.validations[:type] = type
   end
