@@ -32,6 +32,6 @@ class Diesel::Examples::App
       type Numeric
     end
 
-    handle {puts "handling"; 'id as numeric'}
+    handle {'id as numeric'}
   end
 end

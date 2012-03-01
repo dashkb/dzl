@@ -18,7 +18,6 @@ class Diesel::Parameter
 
   def type_valid?(input)
     if @validations[:type] == Numeric
-      puts "validating numeric type #{input}"
       input.to_i.to_s == input
     elsif @validations[:type] == String
       true
@@ -26,7 +25,6 @@ class Diesel::Parameter
   end
 
   def validation_error(input)
-    puts "Trying to validate #{@name} #{@validations[:type]} #{@validations[:type].class}, input is #{input} #{input.class}"
     # Validate type
     return nil if !@opts[:required] && input.nil?
     return :missing_required_param if @opts[:required] && input.nil?

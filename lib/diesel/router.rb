@@ -47,6 +47,6 @@ class Diesel::Router < Hash
       end
     end[1] rescue nil
 
-    endpoint || raise("TODO 404: #{errors}")
+    endpoint || raise([404, errors].to_json)
   end
 end
