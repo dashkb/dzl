@@ -55,6 +55,12 @@ describe 'trey support' do
       end
     end
 
+    it "sets omitted optional parameters to their default values" do
+      get('/page_insights', req_params) do |response|
+        JSON.parse(response.body)['interval'].should == 'day'
+      end
+    end
+
     it "understands array parameters" do
       get('/page_insights', req_params) do |response|
         response.status.should == 200
