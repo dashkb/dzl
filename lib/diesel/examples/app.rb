@@ -2,7 +2,7 @@ module Diesel::Examples; end
 
 class Diesel::Examples::App
   include Diesel
-  METRIC_NAMES_OR_WHATEVER = %w{m1 m2 m3 m4 m5 m6}
+  METRIC_NAMES_OR_WHATEVER ||= %w{m1 m2 m3 m4 m5 m6}
 
   # this could be handy
   # defaults do

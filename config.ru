@@ -2,6 +2,8 @@ require 'bundler/setup'
 require 'diesel'
 require 'diesel/examples/app'
 
+Bundler.require
+
 use Rack::Reloader
 
 favicon_app = lambda do |env|
