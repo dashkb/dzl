@@ -2,11 +2,12 @@ require 'diesel/response_context/request_helpers'
 
 class Diesel::ResponseContext
   include RequestHelpers
-  attr_reader :request, :response
+  attr_reader :request, :response, :endpoint
 
-  def initialize(request, handler)
+  def initialize(endpoint, request, handler)
     @request  = request
     @response = Rack::Response.new
+    @endpoint = endpoint
     @handler  = handler
   end
 

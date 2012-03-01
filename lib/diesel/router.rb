@@ -34,10 +34,19 @@ class Diesel::Router < Hash
   end
 
   def find_endpoint(request)
+    errors = {}
     endpoint = routes.find do |route, endpoint|
-      endpoint.respond_to_request?(request)
+      params, _errors = endpoint.params_and_errors(request)
+      if _errors.empty?
+        # use our validated/transformed/params
+        request.params.merge!(params).symbolize_keys!
+        true
+      else
+        errors[route] = _errors
+        false
+      end
     end[1] rescue nil
 
-    endpoint ? endpoint : raise('TODO 404')
+    endpoint || raise("TODO 404: #{errors}")
   end
 end

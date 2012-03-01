@@ -11,6 +11,16 @@ class Diesel::ParameterBlock
     @params = {}
   end
 
+  def validate(parandidates)
+    @params.each_with_object({}) do |pary, errors|
+      pname, param = pary
+
+      if verror = @params[pname].validation_error(parandidates[pname])
+        errors[pname] = verror
+      end
+    end || {}
+  end
+
   def to_s
     "pblock:#{name}"
   end

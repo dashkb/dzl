@@ -16,20 +16,32 @@ class Diesel::Parameter
     @opts = opts
   end
 
-  def valid?(input)
+  def type_valid?(input)
+    if @validations[:type] == Numeric
+      puts "validating numeric type #{input}"
+      input.to_i.to_s == input
+    elsif @validations[:type] == String
+      true
+    end
+  end
+
+  def validation_error(input)
+    puts "Trying to validate #{@name} #{@validations[:type]} #{@validations[:type].class}, input is #{input} #{input.class}"
     # Validate type
-    return false unless input.is_a?(@validations[:type])
+    return nil if !@opts[:required] && input.nil?
+    return :missing_required_param if @opts[:required] && input.nil?
+    return :type_mismatch unless type_valid?(input)
 
     # Validate regex matches
     if input.is_a?(String) && @validations.has_key?(:matches)
-      return false unless @validations[:matches].any? do |might_match|
+      return :regex_no_match unless @validations[:matches].any? do |might_match|
         might_match.match(input) != nil
       end
     end
 
     # Validate by procs see?
     if @validations.has_key?(:procs)
-      return false if @validations[:procs].one? do |proc|
+      return :proc_validate_failed if @validations[:procs].one? do |proc|
         !proc.call(input)
       end
     end
@@ -37,8 +49,10 @@ class Diesel::Parameter
     # Validator classes
     @validations.select {|k, v| v.kind_of?(Diesel::Validator)}.each do |vary|
       name, validator = vary
-      return false unless validator.validate(input)
+      return :validator_object_failed unless validator.validate(input)
     end
+
+    nil
   end
 
   def as_json(opts=nil)

@@ -24,46 +24,36 @@ class Diesel::Endpoint
     if block_given?
       @handler = Proc.new
     elsif request && @handler.is_a?(Proc)
-      Diesel::ResponseContext.new(request, @handler).respond
+      Diesel::ResponseContext.new(self, request, @handler).respond
+    else
+      raise 'nope'
     end
   end
 
-  def respond_to_request?(request)
-    headers_match(request) && (
-      request.path == @route  ||
-      path_with_params_matches?(request.path)
-    )
+  def params_and_errors(request)
+    route_params = extract_route_parameters(request.path)
+    return [{}, {:_routing => :route_match_fail}] if route_params.nil?
+    params = request.params.merge(route_params).symbolize_keys
+    errors = pblock.validate(params)
+    [params, errors]
   end
 
-  private
-  # TODO
-  def headers_match(request)
-    true
-  end
-
-  def path_with_params_matches?(path)
+  def extract_route_parameters(path)
     path_splits = path.split('/')
     path_splits.delete('')
 
-    return false if path_splits.size != @route_splits.size
+    return nil if path_splits.size != @route_splits.size
 
-    # Does each route split match the corresponding
-    # path split in the request?
-    @route_splits.all? do |route_split|
-      path_split = path_splits.shift
-      # Cast param to integer if it is one # HACKY
-      path_split = path_split.to_i if path_split.to_i.to_s == path_split
-
-      if !route_split.starts_with?(':')
-        path_split == route_split
-      else
-        # Hand off validation to the parameter
-        param = route_split[1..-1].to_sym
-        @pblock.params[param].valid?(path_split)
-      end
-    end
+    Hash[
+      *@route_splits.collect do |rsplit|
+        psplit = path_splits.shift
+        next unless rsplit.starts_with?(':')
+        [rsplit[1..-1].to_sym, psplit]
+      end.compact.flatten
+    ]
   end
 
+  private
   def analyze_route
     @route = "/#{@route}" if @route.is_a?(Symbol)
 

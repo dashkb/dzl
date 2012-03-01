@@ -14,8 +14,16 @@ class Diesel::Examples::App
       type String
     end
 
+    required :z do
+      type String
+    end
+
     handle do
-      "name as string"
+      response['Content-Type'] = 'application/json'
+      {
+        endpoint: endpoint,
+        params: params
+      }.to_json
     end
   end
 
@@ -24,6 +32,6 @@ class Diesel::Examples::App
       type Numeric
     end
 
-    handle {'id as numeric'}
+    handle {puts "handling"; 'id as numeric'}
   end
 end
