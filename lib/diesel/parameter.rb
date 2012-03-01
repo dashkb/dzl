@@ -10,6 +10,7 @@ class Diesel::Parameter
     @validations = {
       type: String
     }
+    @default = nil
   end
 
   def param_type
@@ -26,7 +27,7 @@ class Diesel::Parameter
   # TODO symbol values?
   def validation_error(input)
     # Validate type
-    return nil if !@opts[:required] && input.nil?
+    return @default if !@opts[:required] && input.nil?
     return :missing_required_param if @opts[:required] && input.nil?
 
     # Try to convert to expected type
