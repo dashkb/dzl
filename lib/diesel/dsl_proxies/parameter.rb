@@ -2,6 +2,7 @@ require 'diesel/validators/size'
 
 class Diesel::DSLProxies::Parameter < Diesel::DSLProxy
   alias_method :orig_mm, :method_missing
+  attr_reader :default_value
   def method_missing(m, *args, &block)
     validator = "Diesel::Validators::#{m.to_s.camelize}".constantize rescue nil
     if !validator
@@ -41,7 +42,7 @@ class Diesel::DSLProxies::Parameter < Diesel::DSLProxy
   end
 
   def default(val)
-    @default = val
+    @subject.default = val
   end
 
   def validate_with

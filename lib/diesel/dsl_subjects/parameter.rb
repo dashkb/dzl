@@ -2,6 +2,7 @@ require 'diesel/dsl_proxies/parameter'
 
 class Diesel::DSLSubjects::Parameter < Diesel::DSLSubject
   attr_reader :validations
+  attr_writer :default
 
   def initialize(name, opts)
     @name = name
@@ -9,8 +10,8 @@ class Diesel::DSLSubjects::Parameter < Diesel::DSLSubject
     @validations = {
       type: String
     }
-    @default = Diesel::ValueOrError.new(nil)
     @dsl_proxy = Diesel::DSLProxies::Parameter.new(self)
+    @default = nil
   end
 
   def param_type
