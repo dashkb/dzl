@@ -5,12 +5,13 @@ module Diesel::RackInterface
     rescue StandardError => e
       response = Rack::Response.new
       response.headers['Content-Type'] = 'application/json'
-      response.status = 500;
+      status, errors = JSON.parse(e.to_s) # TODO subclass StandardError
+      response.status = status;
 
       response.write({
-        status: 500,
+        status: status,
         error_class: e.class.to_s,
-        error_info: JSON.parse(e.to_s),
+        errors: errors,
         trace: e.backtrace
       }.to_json)
 

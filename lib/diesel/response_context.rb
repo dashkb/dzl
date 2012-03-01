@@ -4,7 +4,12 @@ class Diesel::ResponseContext
   include RequestHelpers
   attr_reader :request, :response, :endpoint
 
-  def initialize(endpoint, request, handler)
+  @@default_handler = Proc.new do
+    response['Content-Type'] = 'application/json'
+    params.to_json
+  end
+
+  def initialize(endpoint, request, handler = nil)
     @request  = request
     @response = Rack::Response.new
     @endpoint = endpoint
@@ -12,7 +17,7 @@ class Diesel::ResponseContext
   end
 
   def respond
-    value = self.instance_exec(&@handler)
+    value = @handler ? self.instance_exec(&@handler) : self.instance_exec(&@@default_handler)
 
     unless @response.body.present?
       @response.write(value)

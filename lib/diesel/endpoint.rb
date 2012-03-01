@@ -23,10 +23,10 @@ class Diesel::Endpoint
   def handle(request = nil)
     if block_given?
       @handler = Proc.new
-    elsif request && @handler.is_a?(Proc)
+    elsif request
       Diesel::ResponseContext.new(self, request, @handler).respond
     else
-      raise 'nope'
+      raise [500, "handle in #{@route}: block? #{block_given?}, request: #{request}, handler: #{@handler}"].to_json
     end
   end
 

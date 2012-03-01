@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'rack/test'
 
 class TreyAPI
   include Diesel
@@ -101,6 +102,34 @@ class TreyAPI
   end
 end
 
+
+
 describe 'trey support' do
-  pending
+  include Rack::Test::Methods
+
+  def app; TreyAPI; end
+
+  describe '/page_insights' do
+    it "responds 404 to a request with no parameters" do
+      get '/page_insights' do |response|
+        response.status.should == 404
+        errors = JSON.parse(response.body)['errors']['/page_insights']
+        errors.size.should == 4 # required params
+        errors.values.each {|v| v.should == 'missing_required_param'}
+      end
+    end
+
+    it "responds 200 to a request with required parameters provided" do
+      # params = {
+      #   page_ids: [1, 2, 3],
+      #   metrics: ['these', 'those'],
+      #   since: 'yesterday',
+      #   until: 'today'
+      # }
+
+      get('/page_insights?page_ids=1&metrics=these&since=yesterday&until=today') do |response|
+        response.status.should == 200
+      end
+    end
+  end
 end
