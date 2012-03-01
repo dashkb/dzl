@@ -50,6 +50,11 @@ class Diesel::Parameter
 
     return :type_mismatch unless input.is_a?(param_type)
 
+    if param_type == Array && @validations.has_key?(:allowed_values)
+      valid = input.all? { |value| @validations[:allowed_values].include?(value) }
+      return :allowed_values_failed unless valid
+    end
+
     # Validate regex matches
     if input.is_a?(String) && @validations.has_key?(:matches)
       return :regex_no_match unless @validations[:matches].any? do |might_match|

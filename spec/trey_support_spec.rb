@@ -9,7 +9,7 @@ describe 'trey support' do
   describe '/page_insights' do
     req_params = {
       page_ids: [1, 2, 3].join(' '),
-      metrics: ['these', 'those'].join(' '),
+      metrics: ['m1', 'm2'].join(' '),
       since: '2012-01-01',
       until: '2012-02-01'
     }
@@ -94,6 +94,15 @@ describe 'trey support' do
         errors = JSON.parse(response.body)['errors']['/page_insights']
         errors.size.should == 1
         errors.values.each {|v| v.should == 'validator_object_failed'}
+      end
+    end
+
+    it "validates that only allowed parameters are accepted" do
+      get('/page_insights', req_params.merge(metrics:['not_allowed'])) do |response|
+        response.status.should == 404
+        errors = JSON.parse(response.body)['errors']['/page_insights']
+        errors.size.should == 1
+        errors.values.each {|v| v.should == 'allowed_values_failed'}
       end
     end
   end
