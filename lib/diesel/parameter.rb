@@ -1,4 +1,5 @@
 require 'diesel/parameter_dsl'
+require 'pry'
 
 class Diesel::Parameter
   include Diesel::ParameterDSL
@@ -10,7 +11,7 @@ class Diesel::Parameter
     @validations = {
       type: String
     }
-    @default = nil
+    @default = ValueOrError.new(nil)
   end
 
   def param_type
@@ -27,8 +28,8 @@ class Diesel::Parameter
   # TODO symbol values?
   def validation_error(input)
     # Validate type
-    return @default if !@opts[:required] && input.nil?
-    return :missing_required_param if @opts[:required] && input.nil?
+    return ValueOrError.new(nil, @default) if !@opts[:required] && input.nil?
+    return ValueOrError.new(:missing_required_param) if @opts[:required] && input.nil?
 
     # Try to convert to expected type
     begin
@@ -45,26 +46,26 @@ class Diesel::Parameter
         input = input.to_date if param_type == Date
       end
     rescue StandardError => e
-      return :type_conversion_error
+      return ValueOrError.new(:type_conversion_error)
     end
 
-    return :type_mismatch unless input.is_a?(param_type)
+    return ValueOrError.new(:type_mismatch) unless input.is_a?(param_type)
 
     if param_type == Array && @validations.has_key?(:allowed_values)
       valid = input.all? { |value| @validations[:allowed_values].include?(value) }
-      return :allowed_values_failed unless valid
+      return ValueOrError.new(:allowed_values_failed) unless valid
     end
 
     # Validate regex matches
     if input.is_a?(String) && @validations.has_key?(:matches)
-      return :regex_no_match unless @validations[:matches].any? do |might_match|
+      return ValueOrError.new(:regex_no_match) unless @validations[:matches].any? do |might_match|
         might_match.match(input) != nil
       end
     end
 
     # Validate by procs see?
     if @validations.has_key?(:procs)
-      return :proc_validate_failed if @validations[:procs].one? do |proc|
+      return ValueOrError.new(:proc_validate_failed) if @validations[:procs].one? do |proc|
         !proc.call(input)
       end
     end
@@ -72,10 +73,10 @@ class Diesel::Parameter
     # Validator classes
     @validations.select {|k, v| v.kind_of?(Diesel::Validator)}.each do |vary|
       name, validator = vary
-      return :validator_object_failed unless validator.validate(input)
+      return ValueOrError.new(:validator_object_failed) unless validator.validate(input)
     end
 
-    input
+    ValueOrError.new(nil, input)
   end
 
   def as_json(opts=nil)

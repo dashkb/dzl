@@ -1,4 +1,5 @@
 require 'active_support/core_ext'
+require 'diesel/value_or_error'
 require 'diesel/version'
 require 'diesel/dsl'
 require 'diesel/router'

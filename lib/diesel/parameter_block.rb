@@ -1,5 +1,4 @@
 require 'diesel/parameter_block_dsl'
-
 class Diesel::ParameterBlock
   include Diesel::ParameterBlockDSL
   attr_accessor :name, :opts, :params
@@ -16,10 +15,11 @@ class Diesel::ParameterBlock
       pname, param = pary
 
       # verror = value or error.
-      if (verror = @params[pname].validation_error(parandidates[pname])).is_a?(Symbol)
-        errors[pname] = verror
+      verror = @params[pname].validation_error(parandidates[pname])
+      unless verror.valid?
+        errors[pname] = verror.error
       else
-        parandidates[pname] = verror if verror
+        parandidates[pname] = verror.value unless verror.value.nil?
       end
     end || {}
   end
