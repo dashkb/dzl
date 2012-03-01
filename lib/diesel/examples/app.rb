@@ -37,7 +37,7 @@ class Diesel::Examples::App
     end
 
     param :since, :until do
-      #type Time
+      type Date
     end
 
     param :interval do

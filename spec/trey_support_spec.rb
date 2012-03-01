@@ -10,8 +10,8 @@ describe 'trey support' do
     req_params = {
       page_ids: [1, 2, 3].join(' '),
       metrics: ['these', 'those'].join(' '),
-      since: 'yesterday',
-      until: 'today'
+      since: '2012-01-01',
+      until: '2012-02-01'
     }
 
     opt_params = {
@@ -43,10 +43,6 @@ describe 'trey support' do
       end
     end
 
-    it "responds 404 to a request with required parameters improperly formatted" do
-      pending
-    end
-
     it "responds 200 to a request with required parameters provided" do
       get('/page_insights', req_params) do |response|
         response.status.should == 200
@@ -63,6 +59,22 @@ describe 'trey support' do
       get('/page_insights', req_params) do |response|
         response.status.should == 200
         JSON.parse(response.body)['page_ids'].should == ['1', '2', '3']
+      end
+    end
+
+    it "understands date parameters" do
+      get('/page_insights', req_params) do |response|
+        response.status.should == 200
+        JSON.parse(response.body)['since'].should == '2012-01-01'
+      end
+    end
+
+    it "responds 404 to a request with required parameters improperly formatted" do
+      get('/page_insights', req_params.merge(since: 'not a date')) do |response|
+        response.status.should == 404
+        errors = JSON.parse(response.body)['errors']['/page_insights']
+        errors.size.should == 1
+        errors.values.each {|v| v.should == 'type_conversion_error'}
       end
     end
   end

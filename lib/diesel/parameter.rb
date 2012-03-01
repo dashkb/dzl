@@ -39,6 +39,9 @@ class Diesel::Parameter
         numerified = input.to_i.to_s
         raise unless numerified == input
         input = input.to_i
+      elsif param_type == Date || param_type == Time
+        input = Time.parse(input)
+        input = input.to_date if param_type == Date
       end
     rescue StandardError => e
       return :type_conversion_error
