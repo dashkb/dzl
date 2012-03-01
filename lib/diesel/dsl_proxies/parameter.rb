@@ -1,13 +1,13 @@
 require 'diesel/validators/size'
 
-module Diesel::ParameterDSL
+class Diesel::DSLProxies::Parameter < Diesel::DSLProxy
   alias_method :orig_mm, :method_missing
   def method_missing(m, *args, &block)
     validator = "Diesel::Validators::#{m.to_s.camelize}".constantize rescue nil
     if !validator
       orig_mm(m, *args, &block)
     else
-      @validations[m] ||= validator.new
+      @subject.validations[m] ||= validator.new
     end
   end
 
@@ -22,18 +22,18 @@ module Diesel::ParameterDSL
   # or make it configurable
   # TODO
   def matches(regex)
-    @validations[:matches] ||= []
-    @validations[:matches] << regex
+    @subject.validations[:matches] ||= []
+    @subject.validations[:matches] << regex
   end
 
   def allowed_values(ary)
-    @validations[:allowed_values] ||= []
+    @subject.validations[:allowed_values] ||= []
     ary = ary.to_a if ary.is_a?(Range) # TODO or whatever
-    (@validations[:allowed_values] += ary).uniq!
+    (@subject.validations[:allowed_values] += ary).uniq!
   end
 
   def type(type)
-    @validations[:type] = type
+    @subject.validations[:type] = type
   end
 
   def integer
@@ -46,8 +46,8 @@ module Diesel::ParameterDSL
 
   def validate_with
     raise ArgumentError unless block_given?
-    @validations[:procs] ||= []
-    @validations[:procs] << Proc.new
+    @subject.validations[:procs] ||= []
+    @subject.validations[:procs] << Proc.new
   end
 
   # TODO implement these

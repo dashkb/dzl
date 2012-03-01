@@ -1,9 +1,7 @@
-require 'diesel/parameter_dsl'
-require 'pry'
+require 'diesel/dsl_proxies/parameter'
 
-class Diesel::Parameter
-  include Diesel::ParameterDSL
-  attr_reader :name, :opts
+class Diesel::DSLSubjects::Parameter < Diesel::DSLSubject
+  attr_reader :validations
 
   def initialize(name, opts)
     @name = name
@@ -11,7 +9,8 @@ class Diesel::Parameter
     @validations = {
       type: String
     }
-    @default = ValueOrError.new(nil)
+    @default = Diesel::ValueOrError.new(nil)
+    @dsl_proxy = Diesel::DSLProxies::Parameter.new(self)
   end
 
   def param_type
@@ -22,14 +21,13 @@ class Diesel::Parameter
     @opts = opts
   end
 
-
   # Returns a symbol describe the error if error,
   # returns the transformed value if not
   # TODO symbol values?
   def validation_error(input)
     # Validate type
-    return ValueOrError.new(nil, @default) if !@opts[:required] && input.nil?
-    return ValueOrError.new(:missing_required_param) if @opts[:required] && input.nil?
+    return Diesel::ValueOrError.new(nil, @default) if !@opts[:required] && input.nil?
+    return Diesel::ValueOrError.new(:missing_required_param) if @opts[:required] && input.nil?
 
     # Try to convert to expected type
     begin
@@ -46,26 +44,26 @@ class Diesel::Parameter
         input = input.to_date if param_type == Date
       end
     rescue StandardError => e
-      return ValueOrError.new(:type_conversion_error)
+      return Diesel::ValueOrError.new(:type_conversion_error)
     end
 
-    return ValueOrError.new(:type_mismatch) unless input.is_a?(param_type)
+    return Diesel::ValueOrError.new(:type_mismatch) unless input.is_a?(param_type)
 
     if param_type == Array && @validations.has_key?(:allowed_values)
       valid = input.all? { |value| @validations[:allowed_values].include?(value) }
-      return ValueOrError.new(:allowed_values_failed) unless valid
+      return Diesel::ValueOrError.new(:allowed_values_failed) unless valid
     end
 
     # Validate regex matches
     if input.is_a?(String) && @validations.has_key?(:matches)
-      return ValueOrError.new(:regex_no_match) unless @validations[:matches].any? do |might_match|
+      return Diesel::ValueOrError.new(:regex_no_match) unless @validations[:matches].any? do |might_match|
         might_match.match(input) != nil
       end
     end
 
     # Validate by procs see?
     if @validations.has_key?(:procs)
-      return ValueOrError.new(:proc_validate_failed) if @validations[:procs].one? do |proc|
+      return Diesel::ValueOrError.new(:proc_validate_failed) if @validations[:procs].one? do |proc|
         !proc.call(input)
       end
     end
@@ -73,10 +71,10 @@ class Diesel::Parameter
     # Validator classes
     @validations.select {|k, v| v.kind_of?(Diesel::Validator)}.each do |vary|
       name, validator = vary
-      return ValueOrError.new(:validator_object_failed) unless validator.validate(input)
+      return Diesel::ValueOrError.new(:validator_object_failed) unless validator.validate(input)
     end
 
-    ValueOrError.new(nil, input)
+    Diesel::ValueOrError.new(nil, input)
   end
 
   def as_json(opts=nil)
