@@ -111,5 +111,12 @@ describe 'trey support' do
         errors.values.each {|v| v.should == 'allowed_values_failed'}
       end
     end
+
+    it "transforms params prior to validation" do
+      get('/posts', req_params.merge(sort:'m1', order:'ASC')) do |response|
+        response.status.should == 200
+        JSON.parse(response.body)['order'].should == 'asc'
+      end
+    end
   end
 end

@@ -61,8 +61,9 @@ class Diesel::Examples::App
     end
 
     param :order do
-      downcase
-      to_sym
+      prevalidate_transform do |input|
+        input.downcase.to_sym
+      end
       allowed_values [:asc, :desc, :ascending, :descending]
       default :desc
     end

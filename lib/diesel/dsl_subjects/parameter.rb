@@ -50,6 +50,14 @@ class Diesel::DSLSubjects::Parameter < Diesel::DSLSubject
 
     return Diesel::ValueOrError.new(:type_mismatch) unless input.is_a?(param_type)
 
+    # Transform as requested by the user if need be
+    if @validations.has_key?(:prevalidate_transform)
+      @validations[:prevalidate_transform].each do |transform|
+        input = transform.call(input)
+      end
+    end
+
+    # Validate allowed values
     if param_type == Array && @validations.has_key?(:allowed_values)
       valid = input.all? { |value| @validations[:allowed_values].include?(value) }
       return Diesel::ValueOrError.new(:allowed_values_failed) unless valid

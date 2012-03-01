@@ -51,13 +51,9 @@ class Diesel::DSLProxies::Parameter < Diesel::DSLProxy
     @subject.validations[:procs] << Proc.new
   end
 
-  # TODO implement these
-  def downcase
-
-  end
-
-  def to_sym
-
+  def prevalidate_transform(&block)
+    @subject.validations[:prevalidate_transform] ||= []
+    @subject.validations[:prevalidate_transform] << block
   end
 
   # The idea behind this method is to let one
