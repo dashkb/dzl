@@ -69,6 +69,16 @@ describe 'trey support' do
       end
     end
 
+    it "understands time parameters" do
+      get('/page_insights', req_params.merge({
+          since:"#{req_params[:since]}T00:00:00-05:00",
+          until:"#{req_params[:until]}T00:00:00-05:00",
+        })) do |response|
+        response.status.should == 200
+        JSON.parse(response.body)['since'].should == '2012-01-01'
+      end
+    end
+
     it "responds 404 to a request with required parameters improperly formatted" do
       get('/page_insights', req_params.merge(since: 'not a date')) do |response|
         response.status.should == 404
