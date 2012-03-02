@@ -1,11 +1,14 @@
+
 require 'rack'
 require 'diesel/request'
 require 'ruby-prof'
 
 module Diesel::RackInterface
+  PROFILE_REQUESTS = false
+
   def call(env)
     out = nil
-    # RubyProf.start
+    RubyProf.start if PROFILE_REQUESTS
     begin
       out = @_router.handle_request(Diesel::Request.new(env))
     rescue StandardError => e
@@ -33,9 +36,13 @@ module Diesel::RackInterface
 
       out = response.finish
     end
-    # result = RubyProf.stop
-    # printer = RubyProf::GraphHtmlPrinter.new(result)
-    # printer.print(File.open('/Projects/diesel/profile.html', 'w'))
+
+    if PROFILE_REQUESTS
+      result = RubyProf.stop
+      printer = RubyProf::GraphHtmlPrinter.new(result)
+      printer.print(File.open('/Projects/diesel/profile.html', 'w'))
+    end
+
     out
   end
 end
