@@ -15,5 +15,5 @@ map '/favicon.ico' do
 end
 
 map '/' do
-  run Diesel::Examples::RouteProfile
+  run Diesel::Examples::App
 end
