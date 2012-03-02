@@ -1,5 +1,7 @@
 require 'diesel/dsl_proxies/parameter'
 
+class Diesel::ParameterError < StandardError; end
+
 class Diesel::DSLSubjects::Parameter < Diesel::DSLSubject
   attr_reader :validations
   attr_writer :default
@@ -19,6 +21,10 @@ class Diesel::DSLSubjects::Parameter < Diesel::DSLSubject
   end
 
   def overwrite_opts(opts)
+    if @opts[:in_path] && opts[:required] == false
+      raise Diesel::ParameterError.new("Cannot set in-path param #{name} to optional")
+    end
+
     @opts = opts
   end
 
