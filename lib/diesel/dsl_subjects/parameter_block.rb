@@ -14,19 +14,21 @@ class Diesel::DSLSubjects::ParameterBlock < Diesel::DSLSubject
   def validate(parandidates)
     errors = @params.each_with_object({}) do |pary, errors|
       pname, param = pary
+      parandidate_key = param.opts[:header] ? :headers : :params
 
       # verror = value or error.
-      verror = @params[pname].validation_error(parandidates[pname])
+      verror = @params[pname].validation_error(parandidates[parandidate_key][pname])
       unless verror.valid?
         errors[pname] = verror.error
       else
-        parandidates[pname] = verror.value unless verror.value.nil?
+        parandidates[parandidate_key][pname] = verror.value unless verror.value.nil?
       end
     end || {}
 
-    parandidates.each do |pname, value|
+    # Check for extra request params we are not expecting
+    parandidates[:params].each do |pname, value|
       unless @params.keys.include?(pname)
-        parandidates.delete(pname)
+        parandidates[:params].delete(pname)
         errors[pname] = :unknown_param
       end
     end

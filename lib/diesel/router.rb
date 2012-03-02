@@ -39,14 +39,16 @@ class Diesel::Router < Hash
       params, _errors = endpoint.params_and_errors(request)
       if _errors.empty?
         # use our validated/transformed/params
-        _params = Proc.new { params.symbolize_keys }
-        (class << request; self; end).send(:define_method, :params, &_params)
+        request.overwrite_params(params[:params])
+        request.overwrite_headers(params[:headers])
         true
       else
         errors[route] = _errors
         false
       end
-    end[1] rescue nil
+    end
+
+    route, endpoint = endpoint if endpoint
 
     endpoint || raise([404, errors].to_json)
   end

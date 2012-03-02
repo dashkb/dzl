@@ -33,21 +33,15 @@ class Diesel::DSLSubjects::Endpoint < Diesel::DSLSubject
 
   def params_and_errors(request)
     route_params = extract_route_parameters(request.path)
-    #request_headers = extract_headers(request.env)
     return [{}, {:_routing => :route_match_fail}] if route_params.nil?
-    params = request.params.merge(route_params)#.merge(request_headers)
-    params.symbolize_keys!
+
+    params = {
+      params: request.params.merge(route_params).symbolize_keys,
+      headers: request.headers.symbolize_keys
+    }
+
     errors = pblock.validate(params)
     [params, errors]
-  end
-
-  def extract_headers(env)
-    env.each_with_object({}) do |env_pair, headers|
-      k, v = env_pair
-      if header = (/HTTP_(.+)/.match(k.upcase.gsub('-', '_'))[1]) rescue nil
-        headers[header] = v
-      end
-    end
   end
 
   def extract_route_parameters(path)
