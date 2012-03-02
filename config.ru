@@ -1,7 +1,5 @@
 require 'bundler/setup'
 require 'diesel'
-require 'diesel/examples/app'
-
 Bundler.require
 
 use Rack::Reloader
@@ -14,6 +12,17 @@ map '/favicon.ico' do
   run favicon_app
 end
 
+# require 'diesel/examples/trey'
+# map '/' do
+#   run Diesel::Examples::Trey
+# end
+
+require 'diesel/examples/fun_with_params'
 map '/' do
-  run Diesel::Examples::App
+  run Diesel::Examples::FunWithParams
 end
+
+# require 'diesel/examples/route_profile'
+# map '/' do
+#   run Diesel::Examples::RouteProfile
+# end

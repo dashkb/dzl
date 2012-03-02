@@ -15,5 +15,3 @@ module Diesel
   end
 end
 
-require 'diesel/examples/app'
-require 'diesel/examples/route_profile'
