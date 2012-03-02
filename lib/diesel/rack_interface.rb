@@ -1,10 +1,13 @@
 require 'rack'
 require 'diesel/request'
+require 'ruby-prof'
 
 module Diesel::RackInterface
   def call(env)
+    out = nil
+    RubyProf.start
     begin
-      @_router.handle_request(Diesel::Request.new(env))
+      out = @_router.handle_request(Diesel::Request.new(env))
     rescue StandardError => e
       response = Rack::Response.new
       response.headers['Content-Type'] = 'application/json'
@@ -18,7 +21,11 @@ module Diesel::RackInterface
         trace: e.backtrace
       }.to_json)
 
-      response.finish
+      out = response.finish
     end
+    result = RubyProf.stop
+    printer = RubyProf::GraphHtmlPrinter.new(result)
+    printer.print(File.open('/Projects/diesel/profile.html', 'w'))
+    out
   end
 end
