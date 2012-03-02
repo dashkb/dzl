@@ -64,7 +64,7 @@ class Diesel::DSLSubjects::Endpoint < Diesel::DSLSubject
     @route = "/#{@route}" if @route.is_a?(Symbol)
 
     if params = /\/:([^\/]+)/.match(@route)
-      params[1..-1].each {|p| @pblock.required(p.to_sym, in_path: true)}
+      params[1..-1].each {|p| @pblock.dsl_proxy.required(p.to_sym, in_path: true)}
     end
 
     @route_splits = @route.split('/')

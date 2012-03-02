@@ -5,7 +5,7 @@ require 'ruby-prof'
 module Diesel::RackInterface
   def call(env)
     out = nil
-    RubyProf.start
+    # RubyProf.start
     begin
       out = @_router.handle_request(Diesel::Request.new(env))
     rescue StandardError => e
@@ -25,7 +25,7 @@ module Diesel::RackInterface
       else
         response.write({
           status: status,
-          error_class: e.class.to_s,
+          error_class: 'Diesel Runtime Error',
           errors: errors,
           trace: e.backtrace
         }.to_json)
@@ -33,9 +33,9 @@ module Diesel::RackInterface
 
       out = response.finish
     end
-    result = RubyProf.stop
-    printer = RubyProf::GraphHtmlPrinter.new(result)
-    printer.print(File.open('/Users/pbergeron/Sites/diesel/profile.html', 'w'))
+    # result = RubyProf.stop
+    # printer = RubyProf::GraphHtmlPrinter.new(result)
+    # printer.print(File.open('/Projects/diesel/profile.html', 'w'))
     out
   end
 end

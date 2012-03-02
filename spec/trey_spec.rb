@@ -1,10 +1,11 @@
 require 'spec_helper'
 require 'rack/test'
+require 'diesel/examples/trey'
 
 describe 'trey support' do
   include Rack::Test::Methods
 
-  def app; Diesel::Examples::App; end
+  def app; Diesel::Examples::Trey; end
 
   describe '/page_insights' do
     req_params = {

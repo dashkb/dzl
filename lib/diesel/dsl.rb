@@ -21,12 +21,20 @@ module Diesel::DSL
   # If a DSL user calls an undefined method in a block,
   # we want to try to call it on the object on top
   # of our stack
+  alias_method :orig_mm, :method_missing
   def method_missing(m, *args, &block)
     if _subject && _subject.dsl_proxy && _subject.dsl_proxy.respond_to?(m)
       _subject.dsl_proxy.send(m, *args, &block)
     else
       raise "Diesel could not find a responder for #{m}, stack is #{_router[:stack].reverse}"
     end
+  end
+
+  alias_method :orig_respond_to?, :respond_to?
+  def respond_to?(m)
+    orig_respond_to?(m) || (_subject &&
+                           _subject.dsl_proxy &&
+                           subject.dsl_proxy.respond_to?(m))
   end
 
   def app_name(name = nil)
