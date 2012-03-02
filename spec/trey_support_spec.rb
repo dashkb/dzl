@@ -45,7 +45,7 @@ describe 'trey support' do
 
     it "responds 404 if extra, unknown parameters are provided" do
       get('/page_insights', req_params.merge(foo: 'bar')) do |response|
-        JSON.parse(response.body).has_key?('foo').should == false
+        JSON.parse(response.body).has_key?('params').should == false
         response.status.should == 404
       end
     end
@@ -64,21 +64,21 @@ describe 'trey support' do
 
     it "sets omitted optional parameters to their default values" do
       get('/page_insights', req_params) do |response|
-        JSON.parse(response.body)['interval'].should == 'day'
+        JSON.parse(response.body)['params']['interval'].should == 'day'
       end
     end
 
     it "understands array parameters" do
       get('/page_insights', req_params) do |response|
         response.status.should == 200
-        JSON.parse(response.body)['page_ids'].should == ['1', '2', '3']
+        JSON.parse(response.body)['params']['page_ids'].should == ['1', '2', '3']
       end
     end
 
     it "understands date parameters" do
       get('/page_insights', req_params) do |response|
         response.status.should == 200
-        JSON.parse(response.body)['since'].should == '2012-01-01'
+        JSON.parse(response.body)['params']['since'].should == '2012-01-01'
       end
     end
 
@@ -88,7 +88,7 @@ describe 'trey support' do
           until:"#{req_params[:until]}T00:00:00-05:00",
         })) do |response|
         response.status.should == 200
-        JSON.parse(response.body)['since'].should == '2012-01-01'
+        JSON.parse(response.body)['params']['since'].should == '2012-01-01'
       end
     end
 
@@ -123,7 +123,7 @@ describe 'trey support' do
       get('/posts', req_params.merge(sort:'m1', order:'ASC')) do |response|
         #puts JSON.parse(response.body)['errors']['/posts']
         response.status.should == 200
-        JSON.parse(response.body)['order'].should == 'asc'
+        JSON.parse(response.body)['params']['order'].should == 'asc'
       end
     end
   end

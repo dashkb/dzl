@@ -56,7 +56,6 @@ module Diesel::DSL
   end
 
   # TODO rename this method
-  # TODO actually import this pblock into other pblocks
   def global_pblock(&block)
     raise ArgumentError unless block_given?
     pblock(:__default, &block)

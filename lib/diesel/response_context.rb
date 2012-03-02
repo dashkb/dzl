@@ -6,7 +6,10 @@ class Diesel::ResponseContext
 
   @@default_handler = Proc.new do
     response['Content-Type'] = 'application/json'
-    params.to_json
+    {
+      headers: headers,
+      params: params
+    }.to_json
   end
 
   def initialize(endpoint, request, handler = nil)

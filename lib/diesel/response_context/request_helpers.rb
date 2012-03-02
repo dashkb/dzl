@@ -3,5 +3,9 @@ class Diesel::ResponseContext
     def params
       request.params
     end
+
+    def headers
+      request.headers
+    end
   end
 end
