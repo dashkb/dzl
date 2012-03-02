@@ -35,17 +35,19 @@ class Diesel::Router < Hash
   def find_endpoint(request)
     errors = {}
     endpoint = routes.find do |route, endpoint|
-      params_and_headers, _errors = endpoint.params_and_errors(request)
-      if _errors.empty?
-        # use our validated/transformed/params
-        request.params_and_headers_for_endpoint(
-          endpoint,
-          params_and_headers
-        )
-        true
-      else
-        errors[route] = _errors
-        false
+      if request.path.match(endpoint.route_regex)
+        params_and_headers, _errors = endpoint.params_and_errors(request)
+        if _errors.empty?
+          # use our validated/transformed/params
+          request.params_and_headers_for_endpoint(
+            endpoint,
+            params_and_headers
+          )
+          true
+        else
+          errors[route] = _errors
+          false
+        end
       end
     end
 
