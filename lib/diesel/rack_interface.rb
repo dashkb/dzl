@@ -25,7 +25,7 @@ module Diesel::RackInterface
     end
     result = RubyProf.stop
     printer = RubyProf::GraphHtmlPrinter.new(result)
-    printer.print(File.open('/Projects/diesel/profile.html', 'w'))
+    printer.print(File.open('/Users/pbergeron/Sites/diesel/profile.html', 'w'))
     out
   end
 end
