@@ -1,6 +1,8 @@
 class Diesel::Request < Rack::Request
   def initialize(env)
     super(env)
+
+    @endpoints = Hash.new({})
   end
 
   def headers
@@ -24,5 +26,23 @@ class Diesel::Request < Rack::Request
 
   def overwrite_params(new_params)
     @params = new_params
+  end
+
+  def handle_with_endpoint(endpoint)
+    overwrite_params(@endpoints[endpoint][:params])
+    overwrite_headers(@endpoints[endpoint][:headers])
+    endpoint.handle(self).finish
+  end
+
+  def params_and_headers_for_endpoint(endpoint, params_and_headers = nil)
+    if params_and_headers
+      raise ArgumentError unless params_and_headers.is_a?(Hash) &&
+                                 params_and_headers.has_key?(:params) &&
+                                 params_and_headers.has_key?(:headers)
+
+      @endpoints[endpoint].merge!(params_and_headers)
+    else
+      @endpoints[endpoint].slice(:params, :headers)
+    end
   end
 end

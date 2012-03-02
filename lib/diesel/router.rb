@@ -29,18 +29,19 @@ class Diesel::Router < Hash
 
   def handle_request(request)
     endpoint = find_endpoint(request)
-    response = endpoint.handle(request)
-    response.finish
+    response = request.handle_with_endpoint(endpoint)
   end
 
   def find_endpoint(request)
     errors = {}
     endpoint = routes.find do |route, endpoint|
-      params, _errors = endpoint.params_and_errors(request)
+      params_and_headers, _errors = endpoint.params_and_errors(request)
       if _errors.empty?
         # use our validated/transformed/params
-        request.overwrite_params(params[:params])
-        request.overwrite_headers(params[:headers])
+        request.params_and_headers_for_endpoint(
+          endpoint,
+          params_and_headers
+        )
         true
       else
         errors[route] = _errors
