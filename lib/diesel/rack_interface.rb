@@ -1,7 +1,10 @@
+require 'rack'
+require 'diesel/request'
+
 module Diesel::RackInterface
   def call(env)
     begin
-      @_router.handle_request(Rack::Request.new(env))
+      @_router.handle_request(Diesel::Request.new(env))
     rescue StandardError => e
       response = Rack::Response.new
       response.headers['Content-Type'] = 'application/json'
