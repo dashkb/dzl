@@ -14,17 +14,14 @@ module Diesel::DSL
     @_router ||= Diesel::Router.new
   end
 
-  def _subject
-    _router[:stack].last
-  end
-
   # If a DSL user calls an undefined method in a block,
   # we want to try to call it on the object on top
   # of our stack
   alias_method :orig_mm, :method_missing
   def method_missing(m, *args, &block)
-    if _subject && _subject.dsl_proxy && _subject.dsl_proxy.respond_to?(m)
-      _subject.dsl_proxy.send(m, *args, &block)
+    subject = _router.subject
+    if subject && subject.dsl_proxy && subject.dsl_proxy.respond_to?(m)
+      subject.dsl_proxy.send(m, *args, &block)
     else
       raise "Diesel could not find a responder for #{m}, stack is #{_router[:stack].reverse}"
     end
@@ -32,13 +29,9 @@ module Diesel::DSL
 
   alias_method :orig_respond_to?, :respond_to?
   def respond_to?(m)
-    orig_respond_to?(m) || (_subject &&
-                           _subject.dsl_proxy &&
-                           subject.dsl_proxy.respond_to?(m))
-  end
-
-  def app_name(name = nil)
-    _router[:app_name] ||= name
+    orig_respond_to?(m) || (_router.subject &&
+                           _router.subject.dsl_proxy &&
+                           _router.subject.dsl_proxy.respond_to?(m))
   end
 
   def pblock(name, opts = {})
@@ -47,15 +40,17 @@ module Diesel::DSL
                                block_given?
 
     
-    _router[:pblocks][name] = Diesel::DSLSubjects::ParameterBlock.new(name, opts, _router)
-    _router.call_with_subject(Proc.new, _router[:pblocks][name])
+    pb = Diesel::DSLSubjects::ParameterBlock.new(name, opts, _router)
+    _router.add_pblock(pb)
+    _router.call_with_subject(Proc.new, pb)
   end
 
-  def endpoint(name, opts = {})
+  def endpoint(route, opts = {})
     raise ArgumentError unless opts.is_a?(Hash)
 
-    _router[:endpoints][name] = Diesel::DSLSubjects::Endpoint.new(name, opts, _router)
-    _router.call_with_subject(Proc.new, _router[:endpoints][name]) if block_given?
+    ept = Diesel::DSLSubjects::Endpoint.new(route, opts, _router)
+    _router.add_endpoint(ept)
+    _router.call_with_subject(Proc.new, ept) if block_given?
   end
 
   def defaults(&block)

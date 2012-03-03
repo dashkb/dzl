@@ -43,8 +43,8 @@ class Diesel::DSLProxies::ParameterBlock < Diesel::DSLProxy
 
   def import_pblock(*pblocks)
     pblocks.each do |pblock|
-      next unless @subject.router[:pblocks].has_key?(pblock)
-      @subject.router[:pblocks][pblock].params.each do |name, param|
+      next unless @subject.router.pblocks.has_key?(pblock)
+      @subject.router.pblocks[pblock].params.each do |name, param|
         @subject.params[name] = param.dup
       end
     end

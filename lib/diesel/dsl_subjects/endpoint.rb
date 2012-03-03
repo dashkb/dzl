@@ -1,7 +1,7 @@
 require 'diesel/dsl_proxies/endpoint'
 
 class Diesel::DSLSubjects::Endpoint < Diesel::DSLSubject
-  attr_reader :pblock, :route_regex
+  attr_reader :pblock, :route_regex, :route
 
   def initialize(route, opts, router)
     @route   = route
@@ -67,12 +67,9 @@ class Diesel::DSLSubjects::Endpoint < Diesel::DSLSubject
       params[1..-1].each {|p| @pblock.dsl_proxy.required(p.to_sym, in_path: true)}
     end
 
-    @route_splits = @route.split('/')
-    @route_splits.delete('')
+    @route_splits = @route.split('/').select{|s| not s.empty?}
 
-    route_parts = @route.split('/').select{|s| not s.empty?}
-
-    route_regex_string = route_parts.collect do |route_part|
+    route_regex_string = @route_splits.collect do |route_part|
       route_part.starts_with?(':') ? "/.*?" : "/#{route_part}"
     end.push('$').join('')
 

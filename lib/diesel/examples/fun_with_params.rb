@@ -9,4 +9,12 @@ class Diesel::Examples::FunWithParams
       disallowed_values %w{zilch zip nada}
     end
   end
+
+  endpoint '/foo/:bar' do
+    required :bar do
+      type Time
+    end
+  end
+
+  endpoint '/foo/:bar'
 end

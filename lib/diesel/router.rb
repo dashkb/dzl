@@ -1,30 +1,45 @@
-class Diesel::Router < Hash
-  def initialize
-    super
+class Diesel::Router
+  attr_reader :pblocks
 
-    merge!({
-      pblocks: {},
-      endpoints: {},
-      stack: []
-    })
+  def initialize
+    @pblocks = {}
+    @endpoints_by_route = {}
+    @stack = []
   end
 
   def call_with_subject(proc, subject)
-    self[:stack].push(subject)
+    @stack.push(subject)
     proc.call
-    self[:stack].pop
+    @stack.pop
+  end
+
+  def subject
+    @stack.last
   end
 
   def routes
-    self[:endpoints]
+    @endpoints_by_route.keys
+  end
+
+  def endpoints
+    @endpoints = @endpoints_by_route.values.flatten
+  end
+
+  def add_endpoint(ept)
+    @endpoints_by_route[ept.route] ||= []
+    @endpoints_by_route[ept.route] << ept
   end
 
   def pblocks
-    self[:pblocks]
+    @pblocks
+  end
+
+  def add_pblock(pb)
+    @pblocks[pb.name] = pb
   end
 
   def as_json(opts=nil)
-    routes
+    @endpoints
   end
 
   def handle_request(request)
@@ -34,7 +49,9 @@ class Diesel::Router < Hash
 
   def find_endpoint(request)
     errors = {}
-    endpoint = routes.find do |route, endpoint|
+    raise([404, {}].to_json) if routes.empty?
+
+    endpoint = endpoints.find do |endpoint|
       if request.path.match(endpoint.route_regex)
         params_and_headers, _errors = endpoint.params_and_errors(request)
         if _errors.empty?
@@ -45,13 +62,11 @@ class Diesel::Router < Hash
           )
           true
         else
-          errors[route] = _errors
+          errors[endpoint.route] = _errors
           false
         end
       end
     end
-
-    route, endpoint = endpoint if endpoint
 
     endpoint || raise([404, errors].to_json)
   end
