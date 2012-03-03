@@ -1,10 +1,13 @@
-class Diesel::Router
+require 'diesel/dsl_proxies/router'
+
+class Diesel::DSLSubjects::Router < Diesel::DSLSubject
   attr_reader :pblocks
 
   def initialize
     @pblocks = {}
     @endpoints_by_route = {}
     @stack = []
+    @dsl_proxy = Diesel::DSLProxies::Router.new(self)
   end
 
   def call_with_subject(proc, subject)

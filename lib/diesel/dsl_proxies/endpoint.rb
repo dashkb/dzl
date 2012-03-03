@@ -14,11 +14,8 @@ class Diesel::DSLProxies::Endpoint < Diesel::DSLProxy
     end
   end
 
-  def handle(request = nil)
-    if block_given?
-      @handler = Proc.new
-    elsif request && @handler.is_a?(Proc)
-      Diesel::ResponseContext.new(request, @handler).respond
-    end
+  def handle
+    raise ArgumentError unless block_given?
+    @subject.handler = Proc.new
   end
 end

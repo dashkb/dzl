@@ -4,3 +4,5 @@ class Diesel::DSLProxy
     @subject = subject
   end
 end
+
+module Diesel::DSLProxies; end

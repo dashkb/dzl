@@ -21,14 +21,8 @@ class Diesel::DSLSubjects::Endpoint < Diesel::DSLSubject
     }
   end
 
-  def handle(request = nil)
-    if block_given?
-      @handler = Proc.new
-    elsif request
-      Diesel::ResponseContext.new(self, request, @handler).respond
-    else
-      raise [500, "handle in #{@route}: block? #{block_given?}, request: #{request}, handler: #{@handler}"].to_json
-    end
+  def handle(request)
+    Diesel::ResponseContext.new(self, request, @handler).respond
   end
 
   def params_and_errors(request)

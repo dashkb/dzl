@@ -10,7 +10,7 @@ module Diesel::RackInterface
     out = nil
     RubyProf.start if PROFILE_REQUESTS
     begin
-      out = @_router.handle_request(Diesel::Request.new(env))
+      out = __router.handle_request(Diesel::Request.new(env))
     rescue StandardError => e
       response = Rack::Response.new
       response.headers['Content-Type'] = 'application/json'
@@ -40,7 +40,10 @@ module Diesel::RackInterface
     if PROFILE_REQUESTS
       result = RubyProf.stop
       printer = RubyProf::GraphHtmlPrinter.new(result)
-      printer.print(File.open('/Projects/diesel/profile.html', 'w'))
+      printer.print(
+        File.open('/Projects/diesel/profile.html', 'w'),
+        min_percent: 5
+      )
     end
 
     out
