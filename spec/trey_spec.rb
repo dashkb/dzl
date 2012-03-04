@@ -107,7 +107,7 @@ describe 'trey support' do
         response.status.should == 404
         errors = JSON.parse(response.body)['errors']['/page_insights']
         errors.size.should == 1
-        errors.values.each {|v| v.should == 'validator_object_failed'}
+        errors.values.each {|v| v.should == 'size_validation_failed'}
       end
     end
 
@@ -122,7 +122,6 @@ describe 'trey support' do
 
     it "transforms params prior to validation" do
       get('/posts', req_params.merge(sort:'m1', order:'ASC')) do |response|
-        #puts JSON.parse(response.body)['errors']['/posts']
         response.status.should == 200
         JSON.parse(response.body)['params']['order'].should == 'asc'
       end

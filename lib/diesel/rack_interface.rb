@@ -19,6 +19,7 @@ module Diesel::RackInterface
         status, errors = JSON.parse(e.to_s) # TODO subclass StandardError
         response.status = status;
       rescue JSON::ParserError
+        response.status = 500
         response.write({
           status: 500,
           error_class: e.class.to_s,

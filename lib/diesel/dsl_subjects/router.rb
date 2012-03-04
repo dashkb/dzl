@@ -56,16 +56,16 @@ class Diesel::DSLSubjects::Router < Diesel::DSLSubject
 
     endpoint = endpoints.find do |endpoint|
       if request.path.match(endpoint.route_regex)
-        params_and_headers, _errors = endpoint.params_and_errors(request)
-        if _errors.empty?
+        validation = endpoint.validate(request)
+        if validation.value?
           # use our validated/transformed/params
           request.params_and_headers_for_endpoint(
             endpoint,
-            params_and_headers
+            validation.value
           )
           true
         else
-          errors[endpoint.route] = _errors
+          errors[endpoint.route] = validation.error
           false
         end
       end

@@ -25,7 +25,7 @@ class Diesel::DSLSubjects::Endpoint < Diesel::DSLSubject
     Diesel::ResponseContext.new(self, request, @handler).respond
   end
 
-  def params_and_errors(request)
+  def validate(request)
     route_params = extract_route_parameters(request.path)
     return [{}, {:_routing => :route_match_fail}] if route_params.nil?
 
@@ -34,8 +34,7 @@ class Diesel::DSLSubjects::Endpoint < Diesel::DSLSubject
       headers: request.headers.symbolize_keys
     }
 
-    errors = pblock.validate(params)
-    [params, errors]
+    pblock.validate(params)
   end
 
   def extract_route_parameters(path)

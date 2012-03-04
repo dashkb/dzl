@@ -34,4 +34,11 @@ describe Diesel::ValueOrError do
     v = Diesel::ValueOrError.new(v: 8)
     v.value.should == 8
   end
+
+  it 'accepts nil as a valid value' do
+    v = Diesel::ValueOrError.new(v: nil)
+
+    v.value?.should == true
+    v.value.should == nil
+  end
 end

@@ -52,19 +52,14 @@ class Diesel::Examples::Trey
     end
 
     param :sort do
-      begin
-        allowed_values params[:metrics]
-      rescue Diesel::NYI
-        allowed_values [:not, :yet, :implemented]
-      end
       default 'created_time'
     end
 
     param :order do
       prevalidate_transform do |input|
-        input.downcase.to_sym
+        input.downcase
       end
-      allowed_values [:asc, :desc, :ascending, :descending]
+      allowed_values ['asc', 'desc', 'ascending', 'descending']
       default :desc
     end
   end

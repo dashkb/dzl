@@ -3,6 +3,11 @@ require 'diesel/dsl_proxies/parameter'
 class Diesel::ParameterError < StandardError; end
 
 class Diesel::DSLSubjects::Parameter < Diesel::DSLSubject
+  require 'diesel/dsl_subjects/parameter/type_conversion'
+  require 'diesel/dsl_subjects/parameter/allowed_values'
+  include TypeConversion
+  include AllowedValues
+
   attr_reader :validations
   attr_writer :default
 
@@ -31,71 +36,36 @@ class Diesel::DSLSubjects::Parameter < Diesel::DSLSubject
   # Returns a symbol describe the error if error,
   # returns the transformed value if not
   # TODO symbol values?
-  def validation_error(input)
+  def validate(input)
     # Validate type
-    return Diesel::ValueOrError.new(v: @default) if !@opts[:required] && input.nil?
-    return Diesel::ValueOrError.new(e: :missing_required_param) if @opts[:required] && input.nil?
-
-    # Try to convert to expected type
-    begin
-      if param_type == String
-        input = input.to_s
-      elsif param_type == Array
-        input = input.split(' ')
-      elsif param_type == Numeric
-        numerified = input.to_i.to_s
-        raise unless numerified == input
-        input = input.to_i
-      elsif param_type == Date || param_type == Time
-        input = Time.parse(input)
-        input = input.to_date if param_type == Date
-      end
-    rescue StandardError => e
-      return Diesel::ValueOrError.new(e: :type_conversion_error)
-    end
-
-    return Diesel::ValueOrError.new(e: :type_mismatch) unless input.is_a?(param_type)
-
-    # Transform as requested by the user if need be
-    if @validations.has_key?(:prevalidate_transform)
-      @validations[:prevalidate_transform].each do |transform|
-        input = transform.call(input)
+    unless input
+      if @opts[:required]
+        return Diesel::ValueOrError.new(e: :missing_required_param)
+      else
+        return Diesel::ValueOrError.new(v: @default)
       end
     end
 
-    # Validate disallowed values
-    if param_type == Array && @validations.has_key?(:disallowed_values)
-      valid =  !(input.any? { |value| @validations[:disallowed_values].include?(value) })
-      return Diesel::ValueOrError.new(e: :disallowed_values_failed) unless valid
-    end
+    input = convert_type(input)
+    return input if input.error?
 
-    # Validate allowed values
-    if param_type == Array && @validations.has_key?(:allowed_values)
-      valid = input.all? { |value| @validations[:allowed_values].include?(value) }
-      return Diesel::ValueOrError.new(e: :allowed_values_failed) unless valid
-    end
+    input = prevalidate_transform(input.value)
+    return input if input.error?
 
-    # Validate regex matches
-    if input.is_a?(String) && @validations.has_key?(:matches)
-      return Diesel::ValueOrError.new(e: :regex_no_match) unless @validations[:matches].any? do |might_match|
-        might_match.match(input) != nil
-      end
-    end
+    input = allowed_values(input.value)
+    return input if input.error?
 
-    # Validate by procs see?
-    if @validations.has_key?(:procs)
-      return Diesel::ValueOrError.new(e: :proc_validate_failed) if @validations[:procs].one? do |proc|
-        !proc.call(input)
-      end
-    end
+    input = regex_match(input.value)
+    return input if input.error?
 
     # Validator classes
     @validations.select {|k, v| v.kind_of?(Diesel::Validator)}.each do |vary|
       name, validator = vary
-      return Diesel::ValueOrError.new(e: :validator_object_failed) unless validator.validate(input)
+      input = validator.validate(input.value)
+      return input if input.error?
     end
 
-    Diesel::ValueOrError.new(v: input)
+    Diesel::ValueOrError.new(v: input.value)
   end
 
   def as_json(opts=nil)

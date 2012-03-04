@@ -41,6 +41,9 @@ class Diesel::DSLProxies::Parameter < Diesel::DSLProxy
 
   def type(type)
     @subject.validations[:type] = type
+    if type == Array && !@subject.opts[:separator].present?
+      @subject.opts[:separator] = ' '
+    end
   end
 
   def integer

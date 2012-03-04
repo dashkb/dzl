@@ -17,11 +17,11 @@ class Diesel::DSLSubjects::ParameterBlock < Diesel::DSLSubject
       parandidate_key = param.opts[:header] ? :headers : :params
 
       # verror = value or error.
-      verror = @params[pname].validation_error(parandidates[parandidate_key][pname])
-      unless verror.valid?
+      verror = @params[pname].validate(parandidates[parandidate_key][pname])
+      if verror.error?
         errors[pname] = verror.error
       else
-        parandidates[parandidate_key][pname] = verror.value unless verror.value.nil?
+        parandidates[parandidate_key][pname] = verror.value
       end
     end || {}
 
@@ -33,7 +33,11 @@ class Diesel::DSLSubjects::ParameterBlock < Diesel::DSLSubject
       end
     end
 
-    errors
+    unless errors.empty?
+      Diesel::ValueOrError.new(e: errors)
+    else
+      Diesel::ValueOrError.new(v: parandidates)
+    end
   end
 
   def to_s

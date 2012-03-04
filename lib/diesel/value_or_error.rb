@@ -8,10 +8,10 @@ class Diesel::ValueOrError
     if @error && @value
       raise ArgumentError, "it's ValueOrError, not ValueAndError"
     end
-  end
 
-  def valid?
-    @error.nil? ? true : false
+    unless @error || opts.has_key?(:v) || opts.has_key?(:value)
+      raise ArgumentError, "Must provide :value key, even if nil"
+    end
   end
 
   def error?
@@ -19,6 +19,14 @@ class Diesel::ValueOrError
   end
 
   def value?
-    @value.present?
+    !error?
+  end
+
+  def to_s
+    if error?
+      "e: #{@error.inspect}"
+    else
+      "v: #{@value.inspect}"
+    end
   end
 end

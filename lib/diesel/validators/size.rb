@@ -11,9 +11,20 @@ module Diesel::Validators
     end
 
     def validate(input)
-      return false unless input.respond_to?(:size)
-      @conditions.all? do |op, n|
+      unless input.respond_to?(:size)
+        return Diesel::ValueOrError.new(
+          e: :cannot_validate_size
+        )
+      end
+
+      valid = @conditions.all? do |op, n|
         input.size.send(op, n)
+      end
+
+      if valid
+        Diesel::ValueOrError.new(v: input)
+      else
+        Diesel::ValueOrError.new(e: :size_validation_failed)
       end
     end
 
