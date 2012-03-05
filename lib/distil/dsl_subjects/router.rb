@@ -2,6 +2,7 @@ require 'distil/dsl_proxies/router'
 require 'distil/dsl_subjects/defaults'
 
 class Distil::DSLSubjects::Router < Distil::DSLSubject
+  include Distil::Doc
   attr_reader :pblocks, :defaults_dslsub, :defaults, :app
 
   def initialize(app)
@@ -82,4 +83,5 @@ class Distil::DSLSubjects::Router < Distil::DSLSubject
 
     endpoint || raise(Distil::NotFound.new(errors))
   end
+  
 end

@@ -1,0 +1,11 @@
+This is an A Pi Eye
+
+% endpoints.each do |endpoint|
+<%= "##" %> Endpoint <%= endpoint.route %>
+
+<%= "###" %> Params:
+% endpoint.pblock.params.each do |param_name, param_obj|
+* **<%= param_name %>** <% param_obj.validations.each do |type, args| %> - <%= send(:"doc_param_#{type}", args) %> <% end %>
+% end
+
+% end
