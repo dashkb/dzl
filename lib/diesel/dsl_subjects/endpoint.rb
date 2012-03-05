@@ -34,7 +34,7 @@ class Diesel::DSLSubjects::Endpoint < Diesel::DSLSubject
       headers: request.headers.symbolize_keys
     }
 
-    pblock.validate(params)
+    pblock.validate(params, request)
   end
 
   def extract_route_parameters(path)

@@ -114,4 +114,26 @@ describe Diesel::Examples::FunWithParams do
       end
     end
   end
+
+  describe '/protected' do
+    it 'should present http basic challenge with no credentials' do
+      get '/protected' do |response|
+        response.status.should == 401
+      end
+    end
+
+    it 'should present the http basic challenge with invalid credentials' do
+      authorize('wrong', 'values')
+      get '/protected' do |response|
+        response.status.should == 401
+      end
+    end
+
+    it 'should process normally if credentials are correct' do
+      authorize('no', 'way')
+      get '/protected' do |response|
+        response.status.should == 200
+      end
+    end
+  end
 end

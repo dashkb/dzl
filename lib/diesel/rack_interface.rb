@@ -15,6 +15,13 @@ module Diesel::RackInterface
       Diesel.logger.info "#{request.request_method} #{request.path}"
       Diesel.logger.info request.params.inspect
       out = __router.handle_request(request)
+    rescue Diesel::RespondWithHTTPBasicChallenge
+      response = Rack::Response.new
+      response['WWW-Authenticate'] = %(Basic realm="Diesel HTTP Basic")
+      response.status = 401
+      response.headers['Content-Type'] = 'text/html'
+      response.write("Not Authorized\n")
+      out = response.finish
     rescue StandardError => e
       response = Rack::Response.new
       response.headers['Content-Type'] = 'application/json'

@@ -11,7 +11,7 @@ class Diesel::DSLSubjects::ParameterBlock < Diesel::DSLSubject
     @dsl_proxy = Diesel::DSLProxies::ParameterBlock.new(self)
   end
 
-  def validate(parandidates)
+  def validate(parandidates, request)
     errors = @params.each_with_object({}) do |pary, errors|
       pname, param = pary
       parandidate_key = param.opts[:header] ? :headers : :params
@@ -33,8 +33,18 @@ class Diesel::DSLSubjects::ParameterBlock < Diesel::DSLSubject
       end
     end
 
-    unless errors.empty?
+    if !errors.empty?
       Diesel::ValueOrError.new(e: errors)
+    elsif @opts[:protection]
+      protection_errors = @opts[:protection].collect do |protection|
+        protection.allow?(parandidates, request)
+      end.select { |result| result.error? }
+
+      if protection_errors.empty?
+        Diesel::ValueOrError.new(v: parandidates)
+      else
+        protection_errors[0]
+      end
     else
       Diesel::ValueOrError.new(v: parandidates)
     end

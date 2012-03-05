@@ -41,6 +41,14 @@ class Diesel::DSLProxies::ParameterBlock < Diesel::DSLProxy
     end
   end
 
+  def protect
+    raise ArgumentError unless block_given?
+    @subject.opts[:protection] ||= []
+    @subject.opts[:protection] << Diesel::DSLSubjects::Protection.new
+
+    @subject.router.call_with_subject(Proc.new, @subject.opts[:protection].last)
+  end
+
   def import_pblock(*pblocks)
     pblocks.each do |pblock|
       next unless @subject.router.pblocks.has_key?(pblock)

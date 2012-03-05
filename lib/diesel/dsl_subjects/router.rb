@@ -71,6 +71,11 @@ class Diesel::DSLSubjects::Router < Diesel::DSLSubject
       end
     end
 
+    if !errors.empty? &&
+        errors.values.all? {|v| v == :no_http_basic_credentials || v == :invalid_http_basic_credentials}
+      raise Diesel::RespondWithHTTPBasicChallenge
+    end
+
     endpoint || raise([404, errors].to_json)
   end
 end

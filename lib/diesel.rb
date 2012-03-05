@@ -9,6 +9,7 @@ require 'diesel/dsl_subject'
 
 require 'diesel/dsl_subjects/router'
 require 'diesel/dsl_subjects/parameter'
+require 'diesel/dsl_subjects/protection'
 require 'diesel/dsl_subjects/parameter_block'
 require 'diesel/dsl_subjects/endpoint'
 
@@ -27,12 +28,10 @@ module Diesel
       end
 
       def respond_to?(m)
-        Diesel.logger.debug "Router is #{__router}, m is #{m}"
         orig_respond_to?(m) || (__router && __router.dsl_proxy.respond_to?(m))
       end
 
       def method_missing(m, *args, &block)
-        Diesel.logger.debug "mm: #{m}, router: #{__router.inspect}"
         if __router.dsl_proxy.respond_to?(m)
           __router.dsl_proxy.send(m, *args, &block)
         elsif orig_respond_to?(m)

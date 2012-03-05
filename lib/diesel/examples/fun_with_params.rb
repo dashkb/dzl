@@ -32,5 +32,11 @@ class Diesel::Examples::FunWithParams
     end
   end
 
+  endpoint '/protected' do
+    protect do
+      http_basic username: 'no', password: 'way'
+    end
+  end
+
   endpoint '/foo/:bar'
 end
