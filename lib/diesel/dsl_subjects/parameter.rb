@@ -40,7 +40,9 @@ class Diesel::DSLSubjects::Parameter < Diesel::DSLSubject
     # Validate type
     unless input
       if @opts[:required]
-        return Diesel::ValueOrError.new(e: :missing_required_param)
+        return Diesel::ValueOrError.new(
+          e: @opts[:header] ? :missing_required_header : :missing_required_param
+        )
       else
         return Diesel::ValueOrError.new(v: @default)
       end

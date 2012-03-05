@@ -10,7 +10,7 @@ class Diesel::Request < Rack::Request
       env.each_with_object({}) do |env_pair, headers|
         k, v = env_pair
         if header = (/HTTP_(.+)/.match(k.upcase.gsub('-', '_'))[1]) rescue nil
-          headers[header] = v
+          headers[header.downcase] = v
         end
       end
     end
