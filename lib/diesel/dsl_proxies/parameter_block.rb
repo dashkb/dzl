@@ -53,7 +53,7 @@ class Diesel::DSLProxies::ParameterBlock < Diesel::DSLProxy
     pblocks.each do |pblock|
       next unless @subject.router.pblocks.has_key?(pblock)
       @subject.router.pblocks[pblock].params.each do |name, param|
-        @subject.params[name] = param.dup
+        @subject.params[name] = param.clone
       end
     end
   end

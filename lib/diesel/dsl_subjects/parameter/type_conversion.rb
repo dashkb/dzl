@@ -25,9 +25,9 @@ class Diesel::DSLSubjects::Parameter
         else
           v
         end
-      elsif param_type == Integer
+      elsif param_type == Integer || param_type == Fixnum
         if (input = input.to_i.to_s) == input
-          Diesel::ValueOrError.new(v: input)
+          Diesel::ValueOrError.new(v: input.to_i)
         else
           Diesel::ValueOrError.new(
             e: :type_conversion_error

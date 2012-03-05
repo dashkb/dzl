@@ -38,5 +38,36 @@ class Diesel::Examples::FunWithParams
     end
   end
 
+  endpoint '/arithmetic' do
+    optional :int do
+      type Fixnum
+      value >= 5
+    end
+
+    optional :str do
+      value == 'hello'
+    end
+
+    optional :date do
+      type Date
+      value > Date.parse('2012-01-01')
+    end
+  end
+
+  endpoint '/defaults' do
+    optional :foo do
+      default 'hello'
+    end
+
+    optional :bar
+    optional :baz do
+      default 'world'
+    end
+
+    optional :nil do
+      default nil
+    end
+  end
+
   endpoint '/foo/:bar'
 end

@@ -1,4 +1,4 @@
-require 'diesel/validators/size'
+require 'diesel/validator'
 
 class Diesel::DSLProxies::Parameter < Diesel::DSLProxy
   alias_method :orig_mm, :method_missing
@@ -49,7 +49,7 @@ class Diesel::DSLProxies::Parameter < Diesel::DSLProxy
   end
 
   def default(val)
-    @subject.default = val
+    @subject.opts[:default_value] = val
   end
 
   def validate_with

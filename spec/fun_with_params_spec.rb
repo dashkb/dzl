@@ -136,4 +136,62 @@ describe Diesel::Examples::FunWithParams do
       end
     end
   end
+
+  describe '/arithmetic' do
+    it 'should not allow :int < 5' do
+      get('/arithmetic', {int: 4}) do |response|
+        response.status.should == 404
+        JSON.parse(response.body)['errors']['/arithmetic'].should == {
+          'int' => 'value_validation_failed'
+        }
+      end
+
+      get('/arithmetic', {int: 5}) do |response|
+        response.status.should == 200
+      end
+    end
+
+    it "is called arithmetic but works on strings" do
+      get('/arithmetic', {str: 'goodbye'}) do |response|
+        response.status.should == 404
+      end
+
+      get('/arithmetic', {str: 'hello'}) do |response|
+        response.status.should == 200
+      end
+    end
+
+    it "also works on dates" do
+      get('/arithmetic', {date: '2011-12-25'}) do |response|
+        response.status.should == 404
+      end
+
+      get('/arithmetic', {date: '2012-01-02'}) do |response|
+        response.status.should == 200
+      end
+    end
+  end
+
+  describe '/defaults' do
+    it "handles default parameter values correctly" do
+      get('/defaults') do |response|
+        response.status.should == 200
+        JSON.parse(response.body)['params'].should == {
+          'foo' => 'hello',
+          'baz' => 'world',
+          'nil' => nil
+        }
+      end
+
+      get('/defaults', {foo: 'world', baz: 'hello', bar: 'not nil', nil: 'not nil'}) do |response|
+        response.status.should == 200
+        JSON.parse(response.body)['params'].should == {
+          'foo' => 'world',
+          'baz' => 'hello',
+          'bar' => 'not nil',
+          'nil' => 'not nil'
+        }
+      end
+    end
+  end
 end

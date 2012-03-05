@@ -21,7 +21,7 @@ class Diesel::DSLSubjects::ParameterBlock < Diesel::DSLSubject
       if verror.error?
         errors[pname] = verror.error
       else
-        parandidates[parandidate_key][pname] = verror.value
+        parandidates[parandidate_key][pname] = verror.value unless verror.value == :__no_value__
       end
     end || {}
 

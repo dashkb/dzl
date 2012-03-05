@@ -18,7 +18,21 @@ class Diesel::DSLSubjects::Parameter < Diesel::DSLSubject
       type: String
     }
     @dsl_proxy = Diesel::DSLProxies::Parameter.new(self)
-    @default = nil
+  end
+
+  def clone
+    if @name == 'interval'
+      Diesel.logger.debug "duping interval, default #{@opts[:default_value]}"
+    end
+    deep_copy = self.dup
+    deep_copy.dup_data
+    deep_copy
+  end
+
+  def dup_data
+    @opts = @opts.clone
+    @validations = @validations.clone
+    @dsl_proxy = Diesel::DSLProxies::Parameter.new(self)
   end
 
   def param_type
@@ -30,7 +44,7 @@ class Diesel::DSLSubjects::Parameter < Diesel::DSLSubject
       raise Diesel::ParameterError.new("Cannot set in-path param #{name} to optional")
     end
 
-    @opts = opts
+    @opts.merge!(opts)
   end
 
   # Returns a symbol describe the error if error,
@@ -44,7 +58,9 @@ class Diesel::DSLSubjects::Parameter < Diesel::DSLSubject
           e: @opts[:header] ? :missing_required_header : :missing_required_param
         )
       else
-        return Diesel::ValueOrError.new(v: @default)
+        return Diesel::ValueOrError.new(
+          v: @opts.has_key?(:default_value) ? @opts[:default_value] : :__no_value__
+        )
       end
     end
 
