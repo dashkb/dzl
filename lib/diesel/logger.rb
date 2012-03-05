@@ -1,6 +1,6 @@
 class ActiveSupport::BufferedLogger
   def self.timestamp
-    DateTime.now.strftime("[%Y-%m-%d %H:%M%S] - ")
+    DateTime.now.strftime("[%Y-%m-%d %H:%M:%S] - ")
   end
 
   alias_method :orig_add, :add
