@@ -39,11 +39,9 @@ class Diesel::DSLProxies::Parameter < Diesel::DSLProxy
     (@subject.validations[:disallowed_values] += ary).uniq!
   end
 
-  def type(type)
+  def type(type, type_opts = {})
     @subject.validations[:type] = type
-    if type == Array && !@subject.opts[:separator].present?
-      @subject.opts[:separator] = ' '
-    end
+    @subject.opts[:type_opts] = type_opts
   end
 
   def integer

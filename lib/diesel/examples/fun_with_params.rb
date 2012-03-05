@@ -10,6 +10,22 @@ class Diesel::Examples::FunWithParams
     end
   end
 
+  endpoint '/bar' do
+    required :foo do
+      type Array, separator: '+'
+    end
+  end
+
+  endpoint '/baz' do
+    required :foo do
+      type Array, separator: ','
+    end
+  end
+
+  endpoint '/bar' do
+    required :foo
+  end
+
   endpoint '/foo/:bar' do
     required :bar do
       type Time

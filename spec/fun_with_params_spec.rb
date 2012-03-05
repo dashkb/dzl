@@ -41,6 +41,60 @@ describe Diesel::Examples::FunWithParams do
         end
       end
     end
+
+    describe "required parameters" do
+      it "arrays cannot be empty" do
+        get('/foo', {foo: ''}) do |response|
+          response.status.should == 404
+          JSON.parse(response.body)['errors']['/foo'].should == {
+            'foo' => 'empty_required_array'
+          }
+        end
+      end
+
+      it "strings cannot be empty" do
+        get('/bar', {foo: ''}) do |response|
+          response.status.should == 404
+          JSON.parse(response.body)['errors']['/bar'].should == {
+            'foo' => 'missing_required_param'
+          }
+        end
+      end
+    end
+
+    describe "arbitrary array separator" do
+      it "can split arrays on +" do
+        ary = %w{one two three}
+        bad = ary.join(' ')
+        good = ary.join('+')
+
+        get('/bar', {foo: bad}) do |response|
+          response.status.should == 200
+          JSON.parse(response.body)['params']['foo'].should == ['one two three']
+        end
+
+        get('/bar', {foo: good}) do |response|
+          response.status.should == 200
+          JSON.parse(response.body)['params']['foo'].should == ary
+        end
+      end
+    end
+
+    it "can split arrays on ," do
+      ary = %w{one two three}
+      bad = ary.join(' ')
+      good = ary.join(',')
+
+      get('/baz', {foo: bad}) do |response|
+        response.status.should == 200
+        JSON.parse(response.body)['params']['foo'].should == ['one two three']
+      end
+
+      get('/baz', {foo: good}) do |response|
+        response.status.should == 200
+        JSON.parse(response.body)['params']['foo'].should == ary
+      end
+    end
   end
 
   describe '/foo/:bar (:bar as string)' do

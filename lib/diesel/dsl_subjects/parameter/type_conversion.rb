@@ -2,11 +2,29 @@ class Diesel::DSLSubjects::Parameter
   module TypeConversion
     def convert_type(input)
       if param_type == String
-        Diesel::ValueOrError.new(v: input)
+        v = Diesel::ValueOrError.new(v: input)
+
+        if v.value.empty? && @opts[:required]
+          v = Diesel::ValueOrError.new(
+            e: :missing_required_param
+          )
+        else
+          v
+        end
       elsif param_type == Array
-        Diesel::ValueOrError.new(
-          v: input.split(@opts[:separator])
+        v = Diesel::ValueOrError.new(
+          v: input.split(
+            (@opts[:type_opts][:separator] rescue nil) || ' '
+          )
         )
+
+        if v.value.empty? && @opts[:required]
+          Diesel::ValueOrError.new(
+            e: :empty_required_array
+          )
+        else
+          v
+        end
       elsif param_type == Integer
         if (input = input.to_i.to_s) == input
           Diesel::ValueOrError.new(v: input)
