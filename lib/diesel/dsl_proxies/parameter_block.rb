@@ -57,4 +57,5 @@ class Diesel::DSLProxies::ParameterBlock < Diesel::DSLProxy
       end
     end
   end
+  alias_method :import_parameters, :import_pblock
 end

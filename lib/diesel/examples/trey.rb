@@ -16,7 +16,7 @@ class Diesel::Examples::Trey
   # each route gets it's own copy, so, they can 
   # mess with the predefined parameters as much as
   # they'd like
-  global_pblock do
+  global_parameters do
     # required_header :api_key do
     #   validate_with { |key| key == 'open sesame' }
     # end

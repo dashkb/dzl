@@ -6,7 +6,7 @@ class Diesel::DSLSubjects::Endpoint < Diesel::DSLSubject
 
   def initialize(route, opts, router)
     @route   = route
-    @opts   = opts
+    @opts    = opts
     @router  = router
     @pblock  = Diesel::DSLSubjects::ParameterBlock.new(:anonymous, {}, @router)
     @pblock.dsl_proxy.import_pblock(:__default)
@@ -27,9 +27,11 @@ class Diesel::DSLSubjects::Endpoint < Diesel::DSLSubject
   end
 
   def validate(request)
-    route_params = extract_route_parameters(request.path)
-    return [{}, {:_routing => :route_match_fail}] if route_params.nil?
+    unless @opts[:request_methods].include?(request.request_method.downcase.to_sym)
+      return Diesel::ValueOrError.new(e: :request_method_not_supported)
+    end
 
+    route_params = extract_route_parameters(request.path)
     params = {
       params: request.params.merge(route_params).symbolize_keys,
       headers: request.headers.symbolize_keys
