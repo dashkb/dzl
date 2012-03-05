@@ -31,7 +31,7 @@ module Diesel
     # and forwards to the default logger
     ############
     def log(severity, msg)
-      @loggers[:default].send(severity, ActiveSupport::BufferedLogger.timestamp + msg)
+      @loggers[:default].send(severity, msg)
     end
 
     ############

@@ -8,9 +8,13 @@ module Diesel::RackInterface
 
   def call(env)
     out = nil
+    start_time = Time.now
     RubyProf.start if PROFILE_REQUESTS
     begin
-      out = __router.handle_request(Diesel::Request.new(env))
+      request = Diesel::Request.new(env)
+      Diesel.logger.info "#{request.request_method} #{request.path}"
+      Diesel.logger.info request.params.inspect
+      out = __router.handle_request(request)
     rescue StandardError => e
       response = Rack::Response.new
       response.headers['Content-Type'] = 'application/json'
@@ -46,6 +50,8 @@ module Diesel::RackInterface
         min_percent: 5
       )
     end
+
+    Diesel.logger.info "#{out[0]} complete in #{Time.now - start_time}s"
 
     out
   end
