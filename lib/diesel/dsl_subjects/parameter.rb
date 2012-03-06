@@ -76,6 +76,14 @@ class Diesel::DSLSubjects::Parameter < Diesel::DSLSubject
     input = regex_match(input.value)
     return input if input.error?
 
+    # Validator procs
+    if @validations.has_key?(:procs)
+      @validations[:procs].each do |vproc|
+        vproc.call(input.value) or
+          return Diesel::ValueOrError.new(e: :validator_poc_failed)
+      end
+    end
+
     # Validator classes
     @validations.select {|k, v| v.kind_of?(Diesel::Validator)}.each do |vary|
       name, validator = vary

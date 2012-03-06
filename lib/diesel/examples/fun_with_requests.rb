@@ -24,4 +24,10 @@ class Diesel::Examples::FunWithRequests
   get '/get_only'
   delete '/delete_only'
   get '/get_and_post', :post
+
+  get '/validated_header' do
+    required_header :key do
+      validate_with { |k| k == 'hello' }
+    end
+  end
 end

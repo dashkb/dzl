@@ -66,4 +66,18 @@ describe 'endpoint request method' do
       end
     end
   end
+
+  describe 'validating headers' do
+    it 'rejects invalid values' do
+      get('/validated_header', {}, {'HTTP_KEY' => 'hell'}) do |response|
+        response.status.should == 404
+      end
+    end
+
+    it 'accepts valid values' do
+      get('/validated_header', {}, {'HTTP_KEY' => 'hello'}) do |response|
+        response.status.should == 200
+      end
+    end
+  end
 end
