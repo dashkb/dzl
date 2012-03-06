@@ -5,7 +5,7 @@ This is an A Pi Eye
 
 <%= "###" %> Params:
 % endpoint.pblock.params.each do |param_name, param_obj|
-* **<%= param_name %>** <% param_obj.validations.each do |type, args| %> - <%= send(:"doc_param_#{type}", args) %> <% end %>
+* **<%= param_name %>**<% param_obj.validations.each do |type, args| param_limits = send(:"doc_param_#{type}", args); if param_limits %> - <%= param_limits %><% end; end %>
 % end
 
 % end
