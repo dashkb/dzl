@@ -27,6 +27,12 @@ class Diesel::DSLProxies::Router < Diesel::DSLProxy
     @subject.call_with_subject(Proc.new, ept) if block_given?
   end
 
+  def defaults(&block)
+    raise ArgumentError unless block_given?
+
+    @subject.call_with_subject(Proc.new, @subject.defaults_dslsub)
+  end
+
   REQUEST_METHODS.each do |m|
     define_method(m) do |route, *request_methods, &block|
       request_methods << m
@@ -34,12 +40,6 @@ class Diesel::DSLProxies::Router < Diesel::DSLProxy
     end
   end
 
-  def defaults(&block)
-    raise ArgumentError unless block_given?
-    # TODO
-  end
-
-  # TODO rename this method
   def global_parameters(&block)
     raise ArgumentError unless block_given?
     pblock(:__default, &block)

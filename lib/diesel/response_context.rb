@@ -14,9 +14,9 @@ class Diesel::ResponseContext
 
   def initialize(endpoint, request, handler = nil)
     @request  = request
-    @response = Rack::Response.new
     @endpoint = endpoint
     @handler  = handler
+    build_response_with_defaults
   end
 
   def respond
@@ -27,5 +27,13 @@ class Diesel::ResponseContext
     end
 
     @response
+  end
+
+  def build_response_with_defaults
+    @response = Rack::Response.new
+
+    if ct = @endpoint.router.defaults[:content_type]
+      @response['Content-Type'] = ct
+    end
   end
 end

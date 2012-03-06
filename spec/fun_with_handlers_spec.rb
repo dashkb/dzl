@@ -14,6 +14,7 @@ describe 'handlers' do
 
     get('/say_bar_and_api_key', {bar: 'Hello, world'}, {'HTTP_ApI-keY' => 'open sesame'}) do |response|
       response.status.should == 200
+      response['Content-Type'].should == 'application/json'
       JSON.parse(response.body).should == {
         'bar' => 'Hello, world',
         'api_key' => 'open sesame'

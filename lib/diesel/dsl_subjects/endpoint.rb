@@ -1,7 +1,7 @@
 require 'diesel/dsl_proxies/endpoint'
 
 class Diesel::DSLSubjects::Endpoint < Diesel::DSLSubject
-  attr_reader :pblock, :route_regex, :route
+  attr_reader :pblock, :route_regex, :route, :router
   attr_accessor :handler
 
   def initialize(route, opts, router)

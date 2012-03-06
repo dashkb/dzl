@@ -3,6 +3,10 @@ module Diesel::Examples; end
 class Diesel::Examples::FunWithHandlers
   include Diesel
 
+  defaults do
+    content_type 'application/json'
+  end
+
   endpoint '/say_bar' do
     optional :foo, :bar, :baz, :bam
 

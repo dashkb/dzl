@@ -17,9 +17,14 @@ end
 #   run Diesel::Examples::Trey
 # end
 
-# require 'diesel/examples/fun_with_params'
+require 'diesel/examples/fun_with_params'
+map '/' do
+  run Diesel::Examples::FunWithParams
+end
+
+# require 'diesel/examples/fun_with_requests'
 # map '/' do
-#   run Diesel::Examples::FunWithParams
+#   run Diesel::Examples::FunWithRequests
 # end
 
 # require 'diesel/examples/route_profile'
@@ -27,7 +32,7 @@ end
 #   run Diesel::Examples::RouteProfile
 # end
 
-require 'diesel/examples/fun_with_handlers'
-map '/' do
-  run Diesel::Examples::FunWithHandlers
-end
+# require 'diesel/examples/fun_with_handlers'
+# map '/' do
+#   run Diesel::Examples::FunWithHandlers
+# end
