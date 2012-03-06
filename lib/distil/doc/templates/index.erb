@@ -1,7 +1,6 @@
 <%= "#" %> {API Name}
 
 % endpoints.each do |endpoint|
-
-
-
+*Endpoint <%= endpoint.route %> 
+*[<%= endpoint.route.titlecase.gsub("/", "") %>](wiki/<%= endpoint.route.titlecase.gsub("/", "") %>)
 % end

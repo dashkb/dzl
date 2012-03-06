@@ -1,7 +1,7 @@
 module Diesel::EndpointDoc
 
   def to_md
-    endpoint_template = File.read("./lib/diesel/router_doc/templates/endpoint.erb")
+    endpoint_template = File.read("./lib/diesel/doc/templates/endpoint.erb")
 
     ERB.new(endpoint_template, nil, "-%").result(binding)
   end
@@ -54,5 +54,8 @@ module Diesel::EndpointDoc
 
   # Don't doc transforms
   def doc_param_prevalidate_transform(a);  end
+
+  # Don't doc procs
+  def doc_param_procs(a);  end
 
 end

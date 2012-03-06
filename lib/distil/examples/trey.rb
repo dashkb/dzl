@@ -15,7 +15,7 @@ class Distil::Examples::Trey < Distil::Examples::Base
   # each route gets it's own copy, so, they can 
   # mess with the predefined parameters as much as
   # they'd like
-  global_parameters do
+  global_pblock do
     # required_header :api_key do
     #   validate_with { |key| key == 'open sesame' }
     # end
