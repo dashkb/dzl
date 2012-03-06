@@ -1,28 +1,28 @@
-
 require 'rack'
 require 'diesel/request'
-require 'ruby-prof'
 
 module Diesel::RackInterface
   PROFILE_REQUESTS = false
 
   def call(env)
-    out = nil
+    response = nil
     request = nil
     start_time = Time.now
     start_profile if PROFILE_REQUESTS
-    begin
+    response = begin
       request = Diesel::Request.new(env)
-      out = __router.handle_request(request)
+      __router.handle_request(request)
     rescue Diesel::RespondWithHTTPBasicChallenge
-      out = respond_with_http_basic_challenge
+      respond_with_http_basic_challenge
+    rescue Diesel::Error => e
+      respond_with_diesel_error_handler(e)
     rescue StandardError => e
-      out = respond_with_error_handler(e)
+      respond_with_standard_error_handler(e)
     end
 
     stop_profiling_and_print if PROFILE_REQUESTS
-    log_request(request, out, (Time.now - start_time))
-    out
+    log_request(request, response, (Time.now - start_time))
+    response
   end
 
   def respond_with_http_basic_challenge
@@ -31,10 +31,10 @@ module Diesel::RackInterface
     response.status = 401
     response.headers['Content-Type'] = 'text/html'
     response.write("Not Authorized\n")
-    out = response.finish
+    response.finish
   end
 
-  def respond_with_error_handler(e)
+  def respond_with_standard_error_handler(e)
     response = Rack::Response.new
     response.headers['Content-Type'] = 'application/json'
 
@@ -58,10 +58,29 @@ module Diesel::RackInterface
       }.to_json)
     end
 
-    out = response.finish
+    response.finish
+  end
+
+  def respond_with_diesel_error_handler(e)
+    response = Rack::Response.new
+    response.headers['Content-Type'] = 'application/json'
+
+    if e.class == Diesel::NotFound
+      response.status = e.status
+      response.write(e.to_json)
+    elsif e.class == Diesel::BadRequest
+      response.status = e.status
+      response.write(e.to_json)
+    else
+      response.status = e.status
+      response.write(e.to_json)
+    end
+
+    response.finish
   end
 
   def start_profile
+    require 'ruby-prof'
     RubyProf.start
   end
 

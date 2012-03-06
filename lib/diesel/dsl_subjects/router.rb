@@ -52,7 +52,7 @@ class Diesel::DSLSubjects::Router < Diesel::DSLSubject
 
   def find_endpoint(request)
     errors = {}
-    raise([404, {}].to_json) if routes.empty?
+    raise Diesel::NotFound if routes.empty?
 
     endpoint = endpoints.find do |endpoint|
       if request.path.match(endpoint.route_regex)
@@ -76,6 +76,6 @@ class Diesel::DSLSubjects::Router < Diesel::DSLSubject
       raise Diesel::RespondWithHTTPBasicChallenge
     end
 
-    endpoint || raise([404, errors].to_json)
+    endpoint || raise(Diesel::NotFound.new(errors))
   end
 end

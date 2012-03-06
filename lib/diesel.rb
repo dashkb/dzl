@@ -1,6 +1,7 @@
 require 'active_support/core_ext'
 require 'diesel/version'
 require 'diesel/logger'
+require 'diesel/errors'
 require 'diesel/value_or_error'
 require 'diesel/response_context'
 require 'diesel/rack_interface'
