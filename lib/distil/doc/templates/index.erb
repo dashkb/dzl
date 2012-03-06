@@ -1,6 +1,8 @@
-<%= "#" %> {API Name}
+<%= "#" %> <% if app_name %><%= app_name %><% else %>{API Name}<% end %>
 
+{API Description here}
+
+<%= "##" %> Endpoints
 % endpoints.each do |endpoint|
-*Endpoint <%= endpoint.route %> 
-*[<%= endpoint.route.titlecase.gsub("/", "") %>](wiki/<%= endpoint.route.titlecase.gsub("/", "") %>)
+*[<%= endpoint.doc_file_name %>](wiki/<%= endpoint.doc_file_name %>)
 % end

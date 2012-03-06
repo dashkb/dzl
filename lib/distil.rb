@@ -59,6 +59,22 @@ module Distil
           orig_mm(m, *args, &block)
         end
       end
+
+      def to_docs
+        app_name = self.name.split('::').last
+        
+        `mkdir -p ./diesel_docs/#{app_name}/`
+
+        home = File.new("./diesel_docs/#{app_name}/Home.md", "w")
+        home.write(__router.to_md(app_name))
+        home.close
+
+        __router.endpoints.each do |endpoint|
+          endpoint_page = File.new("./diesel_docs/#{app_name}/#{endpoint.doc_file_name}.md", "w")
+          endpoint_page.write(endpoint.to_md)
+          endpoint_page.close
+        end
+      end
     end
   end
 

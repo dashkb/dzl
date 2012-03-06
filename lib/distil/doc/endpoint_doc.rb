@@ -6,6 +6,10 @@ module Diesel::EndpointDoc
     ERB.new(endpoint_template, nil, "-%").result(binding)
   end
 
+  def doc_file_name
+    route.titlecase.gsub("/", "")
+  end
+
   private
   def doc_list(list)
     # At this point, ranges were converted to arrays, so best guess
