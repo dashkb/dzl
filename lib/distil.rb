@@ -5,6 +5,8 @@ require 'distil/errors'
 require 'distil/value_or_error'
 require 'distil/response_context'
 require 'distil/rack_interface'
+require 'distil/doc/router_doc'
+require 'distil/doc/endpoint_doc'
 
 require 'distil/dsl_subject'
 

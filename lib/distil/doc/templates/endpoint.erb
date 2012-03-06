@@ -1,0 +1,20 @@
+<%= "#" %> Endpoint <%= route %> - {Endpoint Name}
+
+{Endpoint Description}
+
+<%= "##" %> Params:
+% pblock.params.each do |param_name, param_obj|
+* **<%= param_name %>**<% param_obj.validations.each do |type, args| param_limits = send(:"doc_param_#{type}", args); if param_limits %> - <%= param_limits %><% end; end %>
+% end
+
+<%= "##" %> Example Usage
+
+{Endpoint Example Description}
+
+```
+{Endpoint Example Request}
+```
+
+```js
+{Endpoint Example Return Data}
+```
