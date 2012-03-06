@@ -35,10 +35,8 @@ module Diesel
       def method_missing(m, *args, &block)
         if __router.dsl_proxy.respond_to?(m)
           __router.dsl_proxy.send(m, *args, &block)
-        elsif orig_respond_to?(m)
-          orig_mm(m, *args, &block)
         else
-          raise "Diesel could not find a responder for #{m}, subject is #{__router.subject}"
+          orig_mm(m, *args, &block)
         end
       end
     end
