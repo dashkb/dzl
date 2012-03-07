@@ -64,6 +64,12 @@ module Diesel
     ENV['RACK_ENV']
   end
 
+  [:development?, :production?, :staging?, :test?].each do |m|
+    define_singleton_method(m) do
+      env == m.to_s[0..-2]
+    end
+  end
+
   def self.development?
     true
   end

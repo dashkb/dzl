@@ -127,4 +127,9 @@ describe 'trey support' do
       end
     end
   end
+
+  it "knows the rack environment" do
+    Diesel.env.should == 'test'
+    Diesel.test?.should == true
+  end
 end
