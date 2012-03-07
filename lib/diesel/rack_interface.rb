@@ -20,9 +20,18 @@ module Diesel::RackInterface
       respond_with_standard_error_handler(e)
     end
 
+    if response[0] < 100
+      response = respond_with_standard_error_handler(StandardError.new('Application did not respond'))
+    end
+
     stop_profiling_and_print if PROFILE_REQUESTS
     log_request(request, response, (Time.now - start_time))
-    response
+
+    if Diesel.production? || Diesel.staging?
+      (response[0] < 500) ? response : [response[0], [], [response[0].to_s]]
+    else
+      response
+    end
   end
 
   def respond_with_http_basic_challenge
