@@ -28,4 +28,10 @@ describe 'handlers' do
       }
     end
   end
+
+  it 'can raise exceptions without exploding everything' do
+    get '/raise' do |response|
+      response.status.should == 500
+    end
+  end
 end

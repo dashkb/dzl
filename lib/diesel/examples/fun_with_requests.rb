@@ -28,4 +28,20 @@ class Diesel::Examples::FunWithRequests < Diesel::Examples::Base
       validate_with { |k| k == 'hello' }
     end
   end
+
+  get '/ambiguous' do
+    required :foo
+
+    handle do
+      params[:foo]
+    end
+  end
+
+  get '/ambiguous' do
+    required :bar
+
+    handle do
+      params[:bar]
+    end
+  end
 end

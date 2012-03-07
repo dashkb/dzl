@@ -24,4 +24,10 @@ class Diesel::Examples::FunWithHandlers < Diesel::Examples::Base
       }.to_json
     end
   end
+
+  get '/raise' do
+    handle do
+      raise 'omg'
+    end
+  end
 end

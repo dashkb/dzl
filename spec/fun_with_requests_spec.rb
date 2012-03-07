@@ -80,4 +80,22 @@ describe 'endpoint request method' do
       end
     end
   end
+
+  describe 'ambiguous routes' do
+    it 'should respond with the right endpoint' do
+      get('/ambiguous', {foo: 'foo'}) do |response|
+        response.status.should == 200
+        response.body.should == 'foo'
+      end
+
+      get('/ambiguous', {bar: 'bar'}) do |response|
+        response.status.should == 200
+        response.body.should == 'bar'
+      end
+
+      get('/ambiguous', {baz: 'baz'}) do |response|
+        response.status.should == 404
+      end
+    end
+  end
 end
