@@ -9,7 +9,7 @@ class Diesel::Error < StandardError
   def to_json
     {
       status: @status,
-      error_class: self.class,
+      error_class: self.class.to_s,
       errors: @data,
       trace: self.backtrace
     }.to_json
