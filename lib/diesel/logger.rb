@@ -40,17 +40,8 @@ module Diesel
     # AppClass.logger.tidy.debug("Something")
     # and we'll write your log message to tidy.environment.log
     ############
-    alias_method :orig_mm, :method_missing
     def method_missing(m, *args, &block)
-      puts "mm in logger for #{m} #{m.class}"
-      return orig_mm(m, *args, &block) unless LOG_METHODS.include?(m)
       @loggers[m] ||= create_logger(m.to_s)
-    end
-
-    alias_method :orig_respond_to?, :respond_to?
-    def respond_to?(m)
-      puts "chekcing logger for #{method}"
-      orig_respond_to?(m) || LOG_METHODS.include?(m)
     end
 
     private
