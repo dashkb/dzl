@@ -8,7 +8,7 @@ class Distil::DSLSubjects::Parameter < Distil::DSLSubject
   include TypeConversion
   include AllowedValues
 
-  attr_reader :validations
+  attr_reader :validations, :opts
   attr_writer :default
 
   def initialize(name, opts)

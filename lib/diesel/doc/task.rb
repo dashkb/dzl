@@ -1,6 +1,5 @@
 
 desc 'Generate documentation templates'
 task :diesel_doc do
-  exec 'mkdir ./diesel_docs/'
-  
+  ObjectSpace.each_object(Diesel::DSLSubjects::Router) {|obj| obj.to_docs}
 end

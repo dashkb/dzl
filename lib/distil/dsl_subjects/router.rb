@@ -2,7 +2,7 @@ require 'distil/dsl_proxies/router'
 require 'distil/dsl_subjects/defaults'
 
 class Distil::DSLSubjects::Router < Distil::DSLSubject
-  include Distil::Doc
+  include Distil::RouterDoc
   attr_reader :pblocks, :defaults_dslsub, :defaults, :app
 
   def initialize(app)
