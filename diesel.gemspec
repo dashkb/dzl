@@ -7,9 +7,9 @@ Gem::Specification.new do |s|
   s.version     = Diesel::VERSION
   s.authors     = ["Kyle Brett"]
   s.email       = ["kyle@vitrue.com"]
-  s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.homepage    = "http://github.com/vitrue/diesel"
+  s.summary     = %q{Parameter validation and request routing DSL & framework}
+  s.description = %q{Diesel includes every single limit.}
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
