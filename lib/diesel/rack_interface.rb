@@ -51,6 +51,7 @@ module Diesel::RackInterface
     response.write({
       status: 500,
       error_class: e.class.to_s,
+      errors: e.to_s,
       trace: e.backtrace
     }.to_json)
 
