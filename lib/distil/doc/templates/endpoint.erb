@@ -3,12 +3,24 @@
 {Endpoint Description}
 
 <%= "##" %> Headers:
-% pblock.params.select{|param_name, param_obj| param_obj.opts[:header]}.each do |param_name, param_obj|
+<%= "###" %> Required:
+% pblock.params.select{|param_name, param_obj| param_obj.opts[:header] && param_obj.opts[:required]}.each do |param_name, param_obj|
+* **<%= param_name %>**<% param_obj.validations.each do |type, args| param_limits = send(:"doc_param_#{type}", args); if param_limits %> - <%= param_limits %><% end; end %>
+% end
+
+<%= "###" %> Optional:
+% pblock.params.select{|param_name, param_obj| param_obj.opts[:header] && !param_obj.opts[:required]}.each do |param_name, param_obj|
 * **<%= param_name %>**<% param_obj.validations.each do |type, args| param_limits = send(:"doc_param_#{type}", args); if param_limits %> - <%= param_limits %><% end; end %>
 % end
 
 <%= "##" %> Params:
-% pblock.params.select{|param_name, param_obj| !param_obj.opts[:header]}.each do |param_name, param_obj|
+<%= "###" %> Required:
+% pblock.params.select{|param_name, param_obj| !param_obj.opts[:header] && param_obj.opts[:required]}.each do |param_name, param_obj|
+* **<%= param_name %>**<% param_obj.validations.each do |type, args| param_limits = send(:"doc_param_#{type}", args); if param_limits %> - <%= param_limits %><% end; end %>
+% end
+
+<%= "###" %> Optional:
+% pblock.params.select{|param_name, param_obj| !param_obj.opts[:header] && !param_obj.opts[:required]}.each do |param_name, param_obj|
 * **<%= param_name %>**<% param_obj.validations.each do |type, args| param_limits = send(:"doc_param_#{type}", args); if param_limits %> - <%= param_limits %><% end; end %>
 % end
 
