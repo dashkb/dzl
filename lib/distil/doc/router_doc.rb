@@ -23,4 +23,9 @@ module Diesel::RouterDoc
 
     ERB.new(index_template, nil, "-%").result(binding)
   end
+
+  def doc_endpoint_request_methods(endpoint)
+    upcased_array = endpoint.opts[:request_methods].collect {|method_sym| method_sym.to_s.upcase}
+    upcased_array.collect {|method_str| method_str.gsub('"', '')}.join(', ')
+  end
 end

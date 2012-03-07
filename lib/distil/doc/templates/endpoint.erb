@@ -1,4 +1,4 @@
-<%= "#" %> <%= route.titlecase.gsub("/", "") %> - <%= route %>
+<%= "#" %> <%= route.titlecase.gsub("/", "") %><% unless doc_endpoint_request_methods.empty? %> - (<%= doc_endpoint_request_methods %>)<% end %> - <%= route %>
 
 {Endpoint Description}
 

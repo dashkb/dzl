@@ -10,6 +10,11 @@ module Diesel::EndpointDoc
     route.titlecase.gsub("/", "")
   end
 
+  def doc_endpoint_request_methods
+    upcased_array = opts[:request_methods].collect {|method_sym| method_sym.to_s.upcase}
+    upcased_array.collect {|method_str| method_str.gsub('"', '')}.sort.join(', ')
+  end
+
   private
   def doc_list(list)
     # At this point, ranges were converted to arrays, so best guess
