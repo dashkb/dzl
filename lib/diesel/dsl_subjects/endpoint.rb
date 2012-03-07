@@ -23,7 +23,7 @@ class Diesel::DSLSubjects::Endpoint < Diesel::DSLSubject
   end
 
   def handle(request)
-    Diesel::ResponseContext.new(self, request, @handler).respond
+    Diesel::ResponseContext.new(self, request, @handler).__respond__
   end
 
   def validate(request)

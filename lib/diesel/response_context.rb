@@ -16,10 +16,14 @@ class Diesel::ResponseContext
     @request  = request
     @endpoint = endpoint
     @handler  = handler
-    build_response_with_defaults
+    __build_response_with_defaults__
   end
 
-  def respond
+  def logger
+    @logger ||= @endpoint.router.app.logger
+  end
+
+  def __respond__
     value = @handler ? self.instance_exec(&@handler) : self.instance_exec(&@@default_handler)
 
     unless @response.body.present?
@@ -29,7 +33,7 @@ class Diesel::ResponseContext
     @response
   end
 
-  def build_response_with_defaults
+  def __build_response_with_defaults__
     @response = Rack::Response.new
 
     if ct = @endpoint.router.defaults[:content_type]
