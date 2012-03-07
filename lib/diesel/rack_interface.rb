@@ -46,26 +46,13 @@ module Diesel::RackInterface
   def respond_with_standard_error_handler(e)
     response = Rack::Response.new
     response.headers['Content-Type'] = 'application/json'
+    response.status = 500
 
-    begin
-      status, errors = JSON.parse(e.to_s) # TODO subclass StandardError
-      response.status = status;
-    rescue JSON::ParserError
-      response.status = 500
-      response.write({
-        status: 500,
-        error_class: e.class.to_s,
-        errors: e.to_s,
-        trace: e.backtrace
-      }.to_json)
-    else
-      response.write({
-        status: status,
-        error_class: 'Diesel Runtime Error',
-        errors: errors,
-        trace: e.backtrace
-      }.to_json)
-    end
+    response.write({
+      status: 500,
+      error_class: e.class.to_s,
+      trace: e.backtrace
+    }.to_json)
 
     response.finish
   end
