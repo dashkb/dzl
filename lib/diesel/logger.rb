@@ -41,7 +41,12 @@ module Diesel
     # and we'll write your log message to tidy.environment.log
     ############
     def method_missing(m, *args, &block)
-      @loggers[m] ||= create_logger(m.to_s)
+      if @loggers[:default].respond_to?(m)
+        # Don't create things like flush.development.log (-:
+        @loggers[:default].send(m, *args, &block)
+      else
+        @loggers[m] ||= create_logger(m.to_s)
+      end
     end
 
     private
