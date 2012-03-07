@@ -94,8 +94,8 @@ module Diesel::RackInterface
   end
 
   def log_request(request, response, seconds)
-    Diesel.logger.info "#{request.request_method} #{request.path}"
-    Diesel.logger.info "PARAMS: #{request.params}"
-    Diesel.logger.info "#{response[0]} in #{seconds}s"
+    logger.info "#{request.request_method} #{request.path}"
+    logger.info "PARAMS: #{request.params}"
+    logger.info "#{response[0]} in #{seconds}s"
   end
 end

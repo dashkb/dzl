@@ -1,8 +1,6 @@
-module Diesel::Examples; end
+require 'diesel/examples/base'
 
-class Diesel::Examples::FunWithParams
-  include Diesel
-
+class Diesel::Examples::FunWithParams < Diesel::Examples::Base
   endpoint '/foo' do
     required :foo do
       type Array

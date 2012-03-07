@@ -18,6 +18,12 @@ module Diesel
   class NYI < StandardError; end
 
   def self.included(base)
+    unless base.respond_to?(:root)
+      raise ArgumentError.new(
+        "Please define #{base}.root to return the path to your app"
+      )
+    end
+
     base.extend(RackInterface)
 
     class << base
@@ -28,6 +34,16 @@ module Diesel
         @__router ||= Diesel::DSLSubjects::Router.new
       end
 
+      def __logger
+        @__logger ||= begin
+          if self.orig_respond_to?(:logger) && self.logger.is_a?(ActiveSupport::BufferedLogger)
+            self.logger
+          else
+            Diesel::Logger.new(self.root)
+          end
+        end
+      end
+
       def respond_to?(m)
         orig_respond_to?(m) || (__router && __router.dsl_proxy.respond_to?(m))
       end
@@ -35,6 +51,8 @@ module Diesel
       def method_missing(m, *args, &block)
         if __router.dsl_proxy.respond_to?(m)
           __router.dsl_proxy.send(m, *args, &block)
+        elsif m == :logger
+          __logger
         else
           orig_mm(m, *args, &block)
         end
@@ -42,13 +60,8 @@ module Diesel
     end
   end
 
-  # TODO this won't work for apps requiring us as a gem
-  def self.root
-    @@root ||= File.expand_path('../../', __FILE__)
-  end
-
   def self.env
-    'development'
+    ENV['RACK_ENV']
   end
 
   def self.development?

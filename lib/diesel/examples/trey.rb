@@ -1,7 +1,6 @@
-module Diesel::Examples; end
+require 'diesel/examples/base'
 
-class Diesel::Examples::Trey
-  include Diesel
+class Diesel::Examples::Trey < Diesel::Examples::Base
   METRIC_NAMES_OR_WHATEVER ||= %w{m1 m2 m3 m4 m5 m6}
 
   # this could be handy

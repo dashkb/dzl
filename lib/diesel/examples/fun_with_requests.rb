@@ -1,8 +1,6 @@
-module Diesel::Examples; end
+require 'diesel/examples/base'
 
-class Diesel::Examples::FunWithRequests
-  include Diesel
-
+class Diesel::Examples::FunWithRequests < Diesel::Examples::Base 
   endpoint '/foo' do
     handle do
       'get'

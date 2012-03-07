@@ -1,8 +1,6 @@
-module Diesel::Examples; end
+require 'diesel/examples/base'
 
-class Diesel::Examples::FunWithHandlers
-  include Diesel
-
+class Diesel::Examples::FunWithHandlers < Diesel::Examples::Base
   defaults do
     content_type 'application/json'
   end

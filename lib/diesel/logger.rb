@@ -12,15 +12,16 @@ end
 
 module Diesel
   class Logger
-    def initialize
+    LOG_METHODS = [:debug, :info, :warn, :error, :fatal]
+    def initialize(app_root)
+      @app_root = app_root
       @loggers = {
         default: create_logger # log/[environment].log
       }
     end
 
     # Get the standard logger methods defined
-    %w{debug info warn error fatal}.each do |severity|
-      severity = severity.to_sym
+    LOG_METHODS.each do |severity|
       define_method(severity) do |msg|
         log(severity, msg)
       end
@@ -39,15 +40,24 @@ module Diesel
     # Diesel.logger.tidy.debug("Something")
     # and we'll write your log message to tidy.environment.log
     ############
-    def method_missing(method)
-      @loggers[method] ||= create_logger(method.to_s)
+    alias_method :orig_mm, :method_missing
+    def method_missing(m, *args, &block)
+      puts "mm in logger for #{m} #{m.class}"
+      return orig_mm(m, *args, &block) unless LOG_METHODS.include?(m)
+      @loggers[m] ||= create_logger(m.to_s)
+    end
+
+    alias_method :orig_respond_to?, :respond_to?
+    def respond_to?(m)
+      puts "chekcing logger for #{method}"
+      orig_respond_to?(m) || LOG_METHODS.include?(m)
     end
 
     private
     def create_logger(name = nil)
       logfile = name ? "#{name}.#{Diesel.env}.log" : "#{Diesel.env}.log"
       ActiveSupport::BufferedLogger.new(
-        File.join(Diesel.root, 'log', logfile),
+        File.join(@app_root, 'log', logfile),
         %w{ staging production }.include?(Diesel.env) ? ::Logger::INFO : ::Logger::DEBUG
       )
     end

@@ -1,7 +1,6 @@
-module Diesel::Examples; end
+require 'diesel/examples/base'
 
-class Diesel::Examples::RouteProfile
-  include Diesel
+class Diesel::Examples::RouteProfile < Diesel::Examples::base
   global_pblock do end
 
   #150 routes

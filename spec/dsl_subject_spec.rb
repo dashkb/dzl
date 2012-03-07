@@ -5,9 +5,7 @@ describe Diesel::DSLSubject do
     Diesel::DSLSubject.any_instance.should_not_receive(:required)
     Diesel::DSLProxies::ParameterBlock.any_instance.should_receive(:required).once
 
-    class DSLTest
-      include Diesel
-
+    class DSLTest < Diesel::Examples::Base
       pblock :foo do
         required :bar
       end
