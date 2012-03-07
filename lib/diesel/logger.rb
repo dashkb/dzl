@@ -28,7 +28,7 @@ module Diesel
     end
 
     ############
-    # Receives all the default log methods on Diesel.logger
+    # Receives all the default log methods on AppClass.logger
     # and forwards to the default logger
     ############
     def log(severity, msg)
@@ -37,7 +37,7 @@ module Diesel
 
     ############
     # The idea here is that you can call
-    # Diesel.logger.tidy.debug("Something")
+    # AppClass.logger.tidy.debug("Something")
     # and we'll write your log message to tidy.environment.log
     ############
     alias_method :orig_mm, :method_missing

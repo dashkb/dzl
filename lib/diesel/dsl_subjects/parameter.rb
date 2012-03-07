@@ -21,9 +21,6 @@ class Diesel::DSLSubjects::Parameter < Diesel::DSLSubject
   end
 
   def clone
-    if @name == 'interval'
-      Diesel.logger.debug "duping interval, default #{@opts[:default_value]}"
-    end
     deep_copy = self.dup
     deep_copy.dup_data
     deep_copy
