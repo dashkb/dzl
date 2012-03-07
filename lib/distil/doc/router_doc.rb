@@ -19,13 +19,8 @@ module Diesel::RouterDoc
   end
 
   def to_md(app_name=nil, root=".")
-    index_template = File.read("#{root}/lib/diesel/doc/templates/index.erb")
+    home_template = File.read("#{root}/lib/diesel/doc/templates/home.erb")
 
-    ERB.new(index_template, nil, "-%").result(binding)
-  end
-
-  def doc_endpoint_request_methods(endpoint)
-    upcased_array = endpoint.opts[:request_methods].collect {|method_sym| method_sym.to_s.upcase}
-    upcased_array.collect {|method_str| method_str.gsub('"', '')}.join(', ')
+    ERB.new(home_template, nil, "-%").result(binding)
   end
 end
