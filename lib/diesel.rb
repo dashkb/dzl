@@ -31,7 +31,7 @@ module Diesel
       alias_method :orig_respond_to?, :respond_to?
 
       def __router
-        @__router ||= Diesel::DSLSubjects::Router.new
+        @__router ||= Diesel::DSLSubjects::Router.new(self)
       end
 
       def __logger

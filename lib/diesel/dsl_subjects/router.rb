@@ -2,15 +2,16 @@ require 'diesel/dsl_proxies/router'
 require 'diesel/dsl_subjects/defaults'
 
 class Diesel::DSLSubjects::Router < Diesel::DSLSubject
-  attr_reader :pblocks, :defaults_dslsub, :defaults
+  attr_reader :pblocks, :defaults_dslsub, :defaults, :app
 
-  def initialize
+  def initialize(app)
     @pblocks = {}
     @endpoints_by_route = {}
     @stack = []
     @defaults = {}
     @defaults_dslsub = Diesel::DSLSubjects::Defaults.new(self)
     @dsl_proxy = Diesel::DSLProxies::Router.new(self)
+    @app = app
   end
 
   def call_with_subject(proc, subject)
