@@ -14,6 +14,10 @@ class Diesel::DSLProxies::Endpoint < Diesel::DSLProxy
     end
   end
 
+  def silent
+    @subject.opts[:silent] = true
+  end
+
   def handle
     raise ArgumentError unless block_given?
     @subject.handler = Proc.new

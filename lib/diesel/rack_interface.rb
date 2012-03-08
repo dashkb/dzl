@@ -25,7 +25,7 @@ module Diesel::RackInterface
     end
 
     stop_profiling_and_print if PROFILE_REQUESTS
-    log_request(request, response, (Time.now - start_time))
+    log_request(request, response, (Time.now - start_time)) unless request.silent?
 
     if Diesel.production? || Diesel.staging?
       (response[0] < 500) ? response : [response[0], [], [response[0].to_s]]

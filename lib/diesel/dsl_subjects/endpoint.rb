@@ -23,6 +23,7 @@ class Diesel::DSLSubjects::Endpoint < Diesel::DSLSubject
   end
 
   def handle(request)
+    request.silent = true if @opts[:silent]
     Diesel::ResponseContext.new(self, request, @handler).__respond__
   end
 

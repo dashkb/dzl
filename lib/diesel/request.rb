@@ -1,4 +1,6 @@
 class Diesel::Request < Rack::Request
+  attr_accessor :silent
+
   def initialize(env)
     super(env)
 
@@ -44,5 +46,9 @@ class Diesel::Request < Rack::Request
     else
       @endpoints[endpoint].slice(:params, :headers)
     end
+  end
+
+  def silent?
+    @silent == true
   end
 end
