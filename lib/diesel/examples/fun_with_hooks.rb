@@ -56,4 +56,10 @@ class Diesel::Examples::FunWithHooks < Diesel::Examples::Base
       params[:speak] = "#{params[:prefix]} #{params[:multiply_then_add]}"
     end
   end
+
+  endpoint '/vomit' do
+    after_validate do
+      raise Diesel::BadRequest.new("This isn't quite what I was expecting")
+    end
+  end
 end

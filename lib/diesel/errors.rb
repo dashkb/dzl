@@ -16,16 +16,18 @@ class Diesel::Error < StandardError
   end
 end
 
-class Diesel::NotFound < Diesel::Error
+class Diesel::RequestError < Diesel::Error; end
+
+class Diesel::NotFound < Diesel::RequestError
   def initialize(data = {})
     super(data)
     @status = 404
   end
 end
 
-class Diesel::BadRequest < Diesel::Error
+class Diesel::BadRequest < Diesel::RequestError
   def initialize(data = {})
     super(data)
-    @status = 404
+    @status = 400
   end
 end

@@ -62,10 +62,7 @@ module Diesel::RackInterface
     response = Rack::Response.new
     response.headers['Content-Type'] = 'application/json'
 
-    if e.class == Diesel::NotFound
-      response.status = e.status
-      response.write(e.to_json)
-    elsif e.class == Diesel::BadRequest
+    if e.is_a?(Diesel::RequestError)
       response.status = e.status
       response.write(e.to_json)
     else

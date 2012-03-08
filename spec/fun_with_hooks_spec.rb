@@ -49,4 +49,13 @@ describe 'FunWithHooks' do
       end
     end
   end
+
+  describe 'after validate hooks' do
+    it 'are good places to raise Diesel::BadRequest' do
+      get('/vomit') do |response|
+        response.status.should == 400
+        JSON.parse(response.body)['errors'].should == "This isn't quite what I was expecting"
+      end
+    end
+  end
 end
