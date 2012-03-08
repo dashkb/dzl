@@ -2,6 +2,7 @@ require 'diesel/dsl_proxies/parameter_block'
 
 class Diesel::DSLSubjects::ParameterBlock < Diesel::DSLSubject
   attr_accessor :params
+  attr_reader :router
 
   def initialize(name, opts, router)
     @name   = name

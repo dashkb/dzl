@@ -58,9 +58,10 @@ class Diesel::DSLProxies::Parameter < Diesel::DSLProxy
     @subject.validations[:procs] << Proc.new
   end
 
-  def prevalidate_transform(&block)
+  def prevalidate_transform
+    raise ArgumentError unless block_given?
     @subject.validations[:prevalidate_transform] ||= []
-    @subject.validations[:prevalidate_transform] << block
+    @subject.validations[:prevalidate_transform] << Proc.new
   end
 
   # The idea behind this method is to let one

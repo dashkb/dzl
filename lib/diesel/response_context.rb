@@ -24,6 +24,10 @@ class Diesel::ResponseContext
   end
 
   def __respond__
+    @endpoint.hooks[:after_validate].each do |proc|
+      self.instance_exec(&proc)
+    end
+
     value = @handler ? self.instance_exec(&@handler) : self.instance_exec(&@@default_handler)
 
     unless @response.body.present?

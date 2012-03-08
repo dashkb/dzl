@@ -2,8 +2,6 @@ require 'bundler/setup'
 require 'diesel'
 Bundler.require
 
-use Rack::Reloader
-
 favicon_app = lambda do |env|
   [200, {'Content-Type' => 'text/html'}, ['OK']]
 end
@@ -17,10 +15,10 @@ end
 #   run Diesel::Examples::Trey
 # end
 
-require 'diesel/examples/fun_with_params'
-map '/' do
-  run Diesel::Examples::FunWithParams
-end
+# require 'diesel/examples/fun_with_params'
+# map '/' do
+#   run Diesel::Examples::FunWithParams
+# end
 
 # require 'diesel/examples/fun_with_requests'
 # map '/' do
@@ -36,3 +34,8 @@ end
 # map '/' do
 #   run Diesel::Examples::FunWithHandlers
 # end
+
+require 'diesel/examples/fun_with_hooks'
+map '/' do
+  run Diesel::Examples::FunWithHooks
+end

@@ -22,4 +22,9 @@ class Diesel::DSLProxies::Endpoint < Diesel::DSLProxy
     raise ArgumentError unless block_given?
     @subject.handler = Proc.new
   end
+
+  def after_validate
+    raise ArgumentError unless block_given?
+    @subject.hooks[:after_validate] << Proc.new
+  end
 end
