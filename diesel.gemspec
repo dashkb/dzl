@@ -1,15 +1,15 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require 'diesel/version'
+require 'distil/version'
 
 Gem::Specification.new do |s|
-  s.name        = "diesel"
-  s.version     = Diesel::VERSION
+  s.name        = "distil"
+  s.version     = Distil::VERSION
   s.authors     = ["Kyle Brett"]
   s.email       = ["kyle@vitrue.com"]
-  s.homepage    = "http://github.com/vitrue/diesel"
+  s.homepage    = "http://github.com/vitrue/distil"
   s.summary     = %q{Parameter validation and request routing DSL & framework}
-  s.description = %q{Diesel includes every single limit.}
+  s.description = %q{Distil includes every single limit.}
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")

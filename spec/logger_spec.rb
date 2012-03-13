@@ -1,8 +1,8 @@
 require 'spec_helper'
-require 'diesel/examples/base'
+require 'distil/examples/base'
 require 'rack/test'
 
-class LogTestApp < Diesel::Examples::Base
+class LogTestApp < Distil::Examples::Base
   get '/log_me' do
     required :msg
 
@@ -12,9 +12,9 @@ class LogTestApp < Diesel::Examples::Base
   end
 end
 
-describe 'Modules including Diesel' do
-  it 'should have a logger object provided by Diesel' do
-    l = Diesel::Examples::Base.__logger.class.should == Diesel::Logger
+describe 'Modules including Distil' do
+  it 'should have a logger object provided by Distil' do
+    l = Distil::Examples::Base.__logger.class.should == Distil::Logger
   end
 
   it 'should use their own logger if it is provided' do
@@ -27,7 +27,7 @@ describe 'Modules including Diesel' do
         @l ||= ActiveSupport::BufferedLogger.new('/dev/null', ::Logger::DEBUG)
       end
 
-      include Diesel
+      include Distil
     end
 
     app.__logger.class.should == ActiveSupport::BufferedLogger

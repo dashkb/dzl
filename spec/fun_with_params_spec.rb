@@ -1,11 +1,11 @@
 require 'spec_helper'
 require 'rack/test'
-require 'diesel/examples/fun_with_params'
+require 'distil/examples/fun_with_params'
 
-describe Diesel::Examples::FunWithParams do
+describe Distil::Examples::FunWithParams do
   include Rack::Test::Methods
 
-  def app; Diesel::Examples::FunWithParams; end
+  def app; Distil::Examples::FunWithParams; end
 
   describe '/foo' do
     describe "understands disallowed values" do

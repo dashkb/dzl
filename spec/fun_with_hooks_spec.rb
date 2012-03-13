@@ -1,10 +1,10 @@
 require 'spec_helper'
 require 'rack/test'
-require 'diesel/examples/fun_with_hooks'
+require 'distil/examples/fun_with_hooks'
 
 describe 'FunWithHooks' do
   include Rack::Test::Methods
-  def app; Diesel::Examples::FunWithHooks; end
+  def app; Distil::Examples::FunWithHooks; end
 
   describe '/pre' do
     it 'only transforms :foo == 1' do
@@ -51,7 +51,7 @@ describe 'FunWithHooks' do
   end
 
   describe 'after validate hooks' do
-    it 'are good places to raise Diesel::BadRequest' do
+    it 'are good places to raise Distil::BadRequest' do
       get('/vomit') do |response|
         response.status.should == 400
         JSON.parse(response.body)['errors'].should == "This isn't quite what I was expecting"

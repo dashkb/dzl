@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe Diesel::DSLSubject do
+describe Distil::DSLSubject do
   it 'forwards DSL methods to its DSL proxy' do
-    Diesel::DSLSubject.any_instance.should_not_receive(:required)
-    Diesel::DSLProxies::ParameterBlock.any_instance.should_receive(:required).once
+    Distil::DSLSubject.any_instance.should_not_receive(:required)
+    Distil::DSLProxies::ParameterBlock.any_instance.should_receive(:required).once
 
-    class DSLTest < Diesel::Examples::Base
+    class DSLTest < Distil::Examples::Base
       pblock :foo do
         required :bar
       end
