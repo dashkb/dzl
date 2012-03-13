@@ -3,7 +3,7 @@ $:.push File.expand_path("../lib", __FILE__)
 require 'distil/version'
 
 Gem::Specification.new do |s|
-  s.name        = "distil"
+  s.name        = "vitrue-distil"
   s.version     = Distil::VERSION
   s.authors     = ["Kyle Brett", "Paul Bergeron"]
   s.email       = ["kyle@vitrue.com", "pbergeron@vitrue.com"]
