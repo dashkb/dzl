@@ -3,7 +3,7 @@ require 'rspec/core/rake_task'
 
 desc 'Bust out a console'
 task :console do
-  exec 'pry -I lib -r diesel'
+  exec 'pry -I lib -r distil'
 end
 
 desc 'Boot the test app on localhost:3000'

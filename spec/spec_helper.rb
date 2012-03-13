@@ -1,5 +1,5 @@
 require 'bundler/setup'
-require 'diesel'
+require 'distil'
 
 ENV['RACK_ENV'] ||= 'test'
 

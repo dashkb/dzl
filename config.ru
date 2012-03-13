@@ -1,5 +1,5 @@
 require 'bundler/setup'
-require 'diesel'
+require 'distil'
 Bundler.require
 
 favicon_app = lambda do |env|
@@ -10,32 +10,32 @@ map '/favicon.ico' do
   run favicon_app
 end
 
-# require 'diesel/examples/trey'
+# require 'distil/examples/trey'
 # map '/' do
-#   run Diesel::Examples::Trey
+#   run Distil::Examples::Trey
 # end
 
-# require 'diesel/examples/fun_with_params'
+# require 'distil/examples/fun_with_params'
 # map '/' do
-#   run Diesel::Examples::FunWithParams
+#   run Distil::Examples::FunWithParams
 # end
 
-# require 'diesel/examples/fun_with_requests'
+# require 'distil/examples/fun_with_requests'
 # map '/' do
-#   run Diesel::Examples::FunWithRequests
+#   run Distil::Examples::FunWithRequests
 # end
 
-# require 'diesel/examples/route_profile'
+# require 'distil/examples/route_profile'
 # map '/' do
-#   run Diesel::Examples::RouteProfile
+#   run Distil::Examples::RouteProfile
 # end
 
-# require 'diesel/examples/fun_with_handlers'
+# require 'distil/examples/fun_with_handlers'
 # map '/' do
-#   run Diesel::Examples::FunWithHandlers
+#   run Distil::Examples::FunWithHandlers
 # end
 
-require 'diesel/examples/fun_with_hooks'
+require 'distil/examples/fun_with_hooks'
 map '/' do
-  run Diesel::Examples::FunWithHooks
+  run Distil::Examples::FunWithHooks
 end

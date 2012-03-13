@@ -1,11 +1,11 @@
 require 'spec_helper'
 require 'rack/test'
-require 'diesel/examples/trey'
+require 'distil/examples/trey'
 
 describe 'trey support' do
   include Rack::Test::Methods
 
-  def app; Diesel::Examples::Trey; end
+  def app; Distil::Examples::Trey; end
 
   describe '/page_insights' do
     req_params = {
@@ -129,7 +129,7 @@ describe 'trey support' do
   end
 
   it "knows the rack environment" do
-    Diesel.env.should == 'test'
-    Diesel.test?.should == true
+    Distil.env.should == 'test'
+    Distil.test?.should == true
   end
 end
