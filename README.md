@@ -4,6 +4,12 @@
 
 Distil is a *request routing* and *parameter validation* DSL.  It is designed for rapid development of small API services.  It is easy to use, read, maintain, and extend.  It promotes some useful conventions for application design without Doing Too Much.
 
+It is a Racktivesupport web framework like those to which you are probably accustomed.  We will have proper documentation soon.
+
+#### I hate reading and want to use this right now!
+
+Ok... https://github.com/vitrue/distil/tree/master/lib/distil/examples
+
 #### Quick philosophical point
 
 In Distil, the API flows in the direction that the request would be serviced.  You define first the route, then a set of acceptable parameters for that route, and finally designate a handler.  
@@ -18,14 +24,21 @@ Inside of a route's DSL block (or in a named parameter block which can be used l
 
 -----------
 
-### Why are we doing it?
+## Contributing
 
-We want to steadily add service-orientedness to the platform.  Rails is big and slow and hogs memory.  It provides us with features that we don't need and costs us extra time and money to deploy and maintain.  Rails seems to encourage us to cram everything we possibly can into each application, because someone already crammed everything they possibly could into the framework.
+We welcome pull requests.  With specs.
 
-Sinatra is a great answer to Rails, and we tried it for Trey.  (With success, I might add.)  But not only did Sinatra not give us everything we needed it really ended up not providing us with very much.  The only feature of Sinatra we really use in Trey is the DSL, which is actually rather similar to Rack's DSL.
+## Open Source
 
-Why is Distil special?  Because the only features in it are things that answer this question: "What drove me crazy while I was writing Trey?"  The two things that we have the most generalized-but-not-part-of-the-framework code for are, you guessed it, routing & parameter validation.  We had some parameters (like `:metrics, :interval, :since, :until`) that applied to lots of routes and got validated the same way on each route.  We had others (like `:sort, :limit, :order`) that only apply to one or a couple of routes.  Each parameter needed to be validated a different way based on the route, but also they shared some similarities.  (i.e. `:post_ids` is always an array of integers, but on `/posts` is limited to a size of 10 and on `/post_insights` is limited to a size of 15.)
+The MIT License (MIT)
+Copyright (c) Vitrue
 
-It also turns out that APIs written in Distil will be self documenting.  If reading the API definition isn't good enough, it will be trivial to dump HTML/Markdown/Whatever formatted documentation for each route and its parameters.  If we add specifications for the output format to the DSL, we will also be able to document the types of responses to expect from each route.
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-Completed, Distil should be a just-add-water (`distil new my_awesome_api; cd my_awesome_api; hack; hack; deploy`) solution for quickly developing and deploying APIs with a very short list of dependencies and small memory footprints.
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+## Versions
+
+We will stick to Semantic Versioning (http://semver.org/), as closely as Bundler will allow.

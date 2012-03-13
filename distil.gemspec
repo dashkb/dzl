@@ -5,8 +5,8 @@ require 'distil/version'
 Gem::Specification.new do |s|
   s.name        = "distil"
   s.version     = Distil::VERSION
-  s.authors     = ["Kyle Brett"]
-  s.email       = ["kyle@vitrue.com"]
+  s.authors     = ["Kyle Brett", "Paul Bergeron"]
+  s.email       = ["kyle@vitrue.com", "pbergeron@vitrue.com"]
   s.homepage    = "http://github.com/vitrue/distil"
   s.summary     = %q{Parameter validation and request routing DSL & framework}
   s.description = %q{Distil includes every single limit.}
