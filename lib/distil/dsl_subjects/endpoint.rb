@@ -3,6 +3,7 @@ require 'distil/dsl_proxies/endpoint'
 class Distil::DSLSubjects::Endpoint < Distil::DSLSubject
   attr_reader :pblock, :route_regex, :route, :router, :hooks
   attr_accessor :handler
+  include Distil::EndpointDoc
 
   def initialize(route, opts, router)
     @route   = route

@@ -1,0 +1,55 @@
+<%= "#" %> <%= route.titlecase.gsub("/", "") %><% unless doc_endpoint_request_methods.empty? %> - (<%= doc_endpoint_request_methods %>)<% end %> - <%= route %>
+
+{Endpoint Description}
+
+% unless pblock.params.empty?
+% if pblock.params.any?{|param_name, param_obj| param_obj.opts[:header]} 
+% if pblock.params.any?{|param_name, param_obj| param_obj.opts[:header] && param_obj.opts[:required]}
+<%= "##" %> Headers:
+
+<%= "###" %> Required:
+% pblock.params.select{|param_name, param_obj| param_obj.opts[:header] && param_obj.opts[:required]}.each do |param_name, param_obj|
+* **<%= param_name %>**<% param_obj.validations.each do |type, args| param_limits = send(:"doc_param_#{type}", args); if param_limits %> - <%= param_limits %><% end; end %>
+% end
+
+% end
+% if pblock.params.any?{|param_name, param_obj| param_obj.opts[:header] && !param_obj.opts[:required]}
+<%= "###" %> Optional:
+% pblock.params.select{|param_name, param_obj| param_obj.opts[:header] && !param_obj.opts[:required]}.each do |param_name, param_obj|
+* **<%= param_name %>**<% param_obj.validations.each do |type, args| param_limits = send(:"doc_param_#{type}", args); if param_limits %> - <%= param_limits %><% end; end %>
+% end
+
+% end
+% end
+% if pblock.params.any?{|param_name, param_obj| !param_obj.opts[:header]} 
+<%= "##" %> Params:
+
+% if pblock.params.any?{|param_name, param_obj| !param_obj.opts[:header] && param_obj.opts[:required]}
+<%= "###" %> Required:
+% pblock.params.select{|param_name, param_obj| !param_obj.opts[:header] && param_obj.opts[:required]}.each do |param_name, param_obj|
+* **<%= param_name %>**<% param_obj.validations.each do |type, args| param_limits = send(:"doc_param_#{type}", args); if param_limits %> - <%= param_limits %><% end; end %>
+% end
+
+% end
+% end
+
+% if pblock.params.any?{|param_name, param_obj| !param_obj.opts[:header] && !param_obj.opts[:required]}
+<%= "###" %> Optional:
+% pblock.params.select{|param_name, param_obj| !param_obj.opts[:header] && !param_obj.opts[:required]}.each do |param_name, param_obj|
+* **<%= param_name %>**<% param_obj.validations.each do |type, args| param_limits = send(:"doc_param_#{type}", args); if param_limits %> - <%= param_limits %><% end; end %>
+% end
+
+% end
+% end
+
+<%= "##" %> Example Usage
+
+{Endpoint Example Description}
+
+```
+{Endpoint Example Request}
+```
+
+```js
+{Endpoint Example Return Data}
+```

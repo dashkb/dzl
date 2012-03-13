@@ -1,0 +1,8 @@
+<%= "#" %> <% if app_name %><%= app_name %><% else %>{API Name}<% end %>
+
+{API Description here}
+
+<%= "##" %> Endpoints
+% endpoints.each do |endpoint|
+*[<% unless endpoint.doc_endpoint_request_methods.empty?%>(<%= endpoint.doc_endpoint_request_methods %>) <% end %><%= endpoint.doc_file_name %>](wiki/<%= endpoint.doc_file_name %>)
+% end

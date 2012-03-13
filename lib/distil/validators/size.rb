@@ -1,5 +1,6 @@
 module Distil::Validators
   class Size < Distil::Validator
+    attr_reader :conditions
     def initialize
       @conditions = []
     end

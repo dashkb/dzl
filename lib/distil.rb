@@ -5,6 +5,8 @@ require 'distil/errors'
 require 'distil/value_or_error'
 require 'distil/response_context'
 require 'distil/rack_interface'
+require 'distil/doc/router_doc'
+require 'distil/doc/endpoint_doc'
 
 require 'distil/dsl_subject'
 
@@ -55,6 +57,22 @@ module Distil
           __logger
         else
           orig_mm(m, *args, &block)
+        end
+      end
+
+      def to_docs
+        app_name = self.name.split('::').last
+        
+        `mkdir -p ./distil_docs/#{app_name}/`
+
+        home = File.new("./distil_docs/#{app_name}/Home.md", "w")
+        home.write(__router.to_md(app_name))
+        home.close
+
+        __router.endpoints.each do |endpoint|
+          endpoint_page = File.new("./distil_docs/#{app_name}/#{endpoint.doc_file_name}.md", "w")
+          endpoint_page.write(endpoint.to_md)
+          endpoint_page.close
         end
       end
     end
