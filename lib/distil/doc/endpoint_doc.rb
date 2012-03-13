@@ -1,7 +1,7 @@
-module Diesel::EndpointDoc
+module Distil::EndpointDoc
 
   def to_md
-    endpoint_template = File.read("./lib/diesel/doc/templates/endpoint.erb")
+    endpoint_template = File.read("./lib/distil/doc/templates/endpoint.erb")
 
     ERB.new(endpoint_template, nil, "-%").result(binding)
   end

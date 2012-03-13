@@ -63,14 +63,14 @@ module Distil
       def to_docs
         app_name = self.name.split('::').last
         
-        `mkdir -p ./diesel_docs/#{app_name}/`
+        `mkdir -p ./distil_docs/#{app_name}/`
 
-        home = File.new("./diesel_docs/#{app_name}/Home.md", "w")
+        home = File.new("./distil_docs/#{app_name}/Home.md", "w")
         home.write(__router.to_md(app_name))
         home.close
 
         __router.endpoints.each do |endpoint|
-          endpoint_page = File.new("./diesel_docs/#{app_name}/#{endpoint.doc_file_name}.md", "w")
+          endpoint_page = File.new("./distil_docs/#{app_name}/#{endpoint.doc_file_name}.md", "w")
           endpoint_page.write(endpoint.to_md)
           endpoint_page.close
         end
