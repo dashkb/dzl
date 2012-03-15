@@ -1,5 +1,5 @@
 require 'bundler/setup'
-require 'distil'
+require 'dzl'
 
 ENV['RACK_ENV'] ||= 'test'
 

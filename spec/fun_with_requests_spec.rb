@@ -1,10 +1,10 @@
 require 'spec_helper'
 require 'rack/test'
-require 'distil/examples/fun_with_requests'
+require 'dzl/examples/fun_with_requests'
 
 describe 'endpoint request method' do
   include Rack::Test::Methods
-  def app; Distil::Examples::FunWithRequests; end
+  def app; Dzl::Examples::FunWithRequests; end
 
   it 'defaults to GET' do
     get('/foo') do |response|

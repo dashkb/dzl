@@ -1,8 +1,8 @@
 require 'spec_helper'
-require 'distil/examples/base'
+require 'dzl/examples/base'
 require 'rack/test'
 
-def app; Distil::Examples::FunWithParams; end
+def app; Dzl::Examples::FunWithParams; end
 
 def file_mock
   mock_file = mock "File"
@@ -13,7 +13,7 @@ end
 
 describe 'router doc functionality' do
   it 'should use a template to generate markdown' do
-    File.should_receive(:read).with("./lib/distil/doc/templates/home.erb").and_return("")
+    File.should_receive(:read).with("./lib/dzl/doc/templates/home.erb").and_return("")
 
     app.__router.to_md
   end

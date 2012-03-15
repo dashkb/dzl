@@ -1,22 +1,22 @@
-# Distil
+# Dzl
 
 ### What is it?
 
-Distil is a *request routing* and *parameter validation* DSL.  It is designed for rapid development of small API services.  It is easy to use, read, maintain, and extend.  It promotes some useful conventions for application design without Doing Too Much.
+Dzl is a *request routing* and *parameter validation* DSL.  It is designed for rapid development of small API services.  It is easy to use, read, maintain, and extend.  It promotes some useful conventions for application design without Doing Too Much.
 
 It is a Racktivesupport web framework like those to which you are probably accustomed.  We will have proper documentation soon.
 
 #### I hate reading and want to use this right now!
 
-Ok... https://github.com/vitrue/distil/tree/master/lib/distil/examples
+Ok... https://github.com/vitrue/dzl/tree/master/lib/dzl/examples
 
 #### Quick philosophical point
 
-In Distil, the API flows in the direction that the request would be serviced.  You define first the route, then a set of acceptable parameters for that route, and finally designate a handler.  
+In Dzl, the API flows in the direction that the request would be serviced.  You define first the route, then a set of acceptable parameters for that route, and finally designate a handler.  
 
 #### Request routing
 
-In this regard, Distil looks a lot like Sinatra.  Writing (and reading) routes and handlers is simple.  There is no need to have multiple open files to figure out what code responds to `GET /foo`.
+In this regard, Dzl looks a lot like Sinatra.  Writing (and reading) routes and handlers is simple.  There is no need to have multiple open files to figure out what code responds to `GET /foo`.
 
 #### Parameter Validation
 

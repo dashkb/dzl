@@ -1,5 +1,5 @@
 require 'bundler/setup'
-require 'distil'
+require 'dzl'
 Bundler.require
 
 favicon_app = lambda do |env|
@@ -12,30 +12,30 @@ end
 
 # require 'distil/examples/trey'
 # map '/' do
-#   run Distil::Examples::Trey
+#   run Dzl::Examples::Trey
 # end
 
 # require 'distil/examples/fun_with_params'
 # map '/' do
-#   run Distil::Examples::FunWithParams
+#   run Dzl::Examples::FunWithParams
 # end
 
 # require 'distil/examples/fun_with_requests'
 # map '/' do
-#   run Distil::Examples::FunWithRequests
+#   run Dzl::Examples::FunWithRequests
 # end
 
 # require 'distil/examples/route_profile'
 # map '/' do
-#   run Distil::Examples::RouteProfile
+#   run Dzl::Examples::RouteProfile
 # end
 
 # require 'distil/examples/fun_with_handlers'
 # map '/' do
-#   run Distil::Examples::FunWithHandlers
+#   run Dzl::Examples::FunWithHandlers
 # end
 
 require 'distil/examples/fun_with_hooks'
 map '/' do
-  run Distil::Examples::FunWithHooks
+  run Dzl::Examples::FunWithHooks
 end

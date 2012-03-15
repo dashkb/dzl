@@ -1,10 +1,10 @@
 require 'spec_helper'
 require 'rack/test'
-require 'distil/examples/fun_with_handlers'
+require 'dzl/examples/fun_with_handlers'
 
 describe 'handlers' do
   include Rack::Test::Methods
-  def app; Distil::Examples::FunWithHandlers; end
+  def app; Dzl::Examples::FunWithHandlers; end
 
   it 'have access to parameters and headers' do
     get '/say_bar?baz=no&bam=nope&bar=Hello%2C%20world' do |response|
