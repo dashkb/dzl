@@ -19,6 +19,10 @@ require 'dzl/dsl_subjects/endpoint'
 module Dzl
   class NYI < StandardError; end
 
+  def self.env
+    ENV['RACK_ENV']
+  end
+
   def self.included(base)
     unless base.respond_to?(:root)
       raise ArgumentError.new(
@@ -76,10 +80,6 @@ module Dzl
         end
       end
     end
-  end
-
-  def self.env
-    ENV['RACK_ENV']
   end
 
   [:development?, :production?, :staging?, :test?].each do |m|
