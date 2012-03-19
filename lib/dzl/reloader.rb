@@ -1,13 +1,7 @@
 class Dzl::Reloader
-  SKIP = [
-    /\/config\//,
-    /\/deploy\//,
-    /\/scripts\//
-  ]
-
   def initialize(app)
     @app = app
-    @files = Dir["#{app.root}/**/*.rb"]
+    @files = Dir["#{app.root}/lib/**/*.rb"]
     @last_reload = Time.now
   end
 
@@ -20,7 +14,7 @@ class Dzl::Reloader
 
     @files.each do |file|
       begin
-        load(file) if SKIP.none? {|re| file.match(re)} && $LOADED_FEATURES.include?(file)
+        load(file) if $LOADED_FEATURES.include?(file)
       rescue LoadError, SyntaxError, SystemStackError => e
         @app.logger.error(e)
         @app.logger.error(e.backtrace)
