@@ -1,3 +1,4 @@
+require 'active_support'
 require 'active_support/core_ext'
 require 'dzl/version'
 require 'dzl/logger'
@@ -19,11 +20,21 @@ require 'dzl/dsl_subjects/endpoint'
 module Dzl
   class NYI < StandardError; end
 
+  def self.env
+    ENV['RACK_ENV']
+  end
+
   def self.included(base)
     unless base.respond_to?(:root)
       raise ArgumentError.new(
         "Please define #{base}.root to return the path to your app"
       )
+    end
+
+    [:development?, :production?, :staging?, :test?].each do |m|
+      define_singleton_method(m) do
+        env == m.to_s[0..-2]
+      end
     end
 
     base.extend(RackInterface)
@@ -34,6 +45,10 @@ module Dzl
 
       def __router
         @__router ||= Dzl::DSLSubjects::Router.new(self)
+      end
+
+      def __wipe
+        @__router = nil
       end
 
       def __logger
@@ -75,21 +90,14 @@ module Dzl
           endpoint_page.close
         end
       end
+
+      if Dzl.development?
+        require 'dzl/reloader'
+        def __reloader
+          @__reloader ||= Dzl::Reloader.new(self)
+        end
+      end
     end
-  end
-
-  def self.env
-    ENV['RACK_ENV']
-  end
-
-  [:development?, :production?, :staging?, :test?].each do |m|
-    define_singleton_method(m) do
-      env == m.to_s[0..-2]
-    end
-  end
-
-  def self.development?
-    true
   end
 end
 

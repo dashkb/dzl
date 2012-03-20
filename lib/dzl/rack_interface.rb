@@ -5,6 +5,7 @@ module Dzl::RackInterface
   PROFILE_REQUESTS = false
 
   def call(env)
+    __reloader.reload_if_updated if respond_to?(:__reloader)
     response = nil
     request = nil
     start_time = Time.now
