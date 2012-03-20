@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Kyle Brett", "Paul Bergeron"]
   s.email       = ["kyle@vitrue.com", "pbergeron@vitrue.com"]
   s.homepage    = "http://github.com/vitrue/dzl"
-  s.summary     = %q{Parameter validation and request routing DSL & framework}
-  s.description = %q{Dzl zones live!}
+  s.summary     = %q{Parameter validation and request routing DSL & web framework}
+  s.description = %q{Small, fast racktivesupport web framework with handy DSL and explicit parameter validation.}
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
