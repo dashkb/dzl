@@ -19,6 +19,7 @@ class Dzl::DSLProxies::Router < Dzl::DSLProxy
 
     @subject.call_with_scope(Proc.new, path)
   end
+  alias_method :namespace, :scope
 
   def endpoint(route, *request_methods)
     request_methods = [:get] if request_methods.empty?
