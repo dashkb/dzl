@@ -74,6 +74,6 @@ class Dzl::DSLSubjects::Endpoint < Dzl::DSLSubject
       route_part.starts_with?(':') ? "/.*?" : "/#{route_part}"
     end.push('$').join('')
 
-    @route_regex = Regexp.new(route_regex_string)
+    @route_regex = Regexp.new('^' + route_regex_string)
   end
 end

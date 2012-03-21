@@ -115,6 +115,12 @@ describe Dzl::Examples::FunWithParams do
     end
   end
 
+  describe '/bar' do
+    it 'should 404 on /bar/anything' do
+      get('/bar/foo') {|r| r.status.should == 404}
+    end
+  end
+
   describe '/protected' do
     it 'should present http basic challenge with no credentials' do
       get '/protected' do |response|
