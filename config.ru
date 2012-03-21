@@ -35,7 +35,12 @@ end
 #   run Dzl::Examples::FunWithHandlers
 # end
 
-require 'dzl/examples/fun_with_hooks'
+# require 'dzl/examples/fun_with_hooks'
+# map '/' do
+#   run Dzl::Examples::FunWithHooks
+# end
+
+require 'dzl/examples/fun_with_scopes'
 map '/' do
-  run Dzl::Examples::FunWithHooks
+  run Dzl::Examples::FunWithScopes
 end

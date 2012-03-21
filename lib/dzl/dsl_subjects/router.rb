@@ -9,6 +9,7 @@ class Dzl::DSLSubjects::Router < Dzl::DSLSubject
     @pblocks = {}
     @endpoints_by_route = {}
     @stack = []
+    @scope = []
     @defaults = {}
     @defaults_dslsub = Dzl::DSLSubjects::Defaults.new(self)
     @dsl_proxy = Dzl::DSLProxies::Router.new(self)
@@ -23,6 +24,16 @@ class Dzl::DSLSubjects::Router < Dzl::DSLSubject
 
   def subject
     @stack.last
+  end
+
+  def call_with_scope(proc, scope)
+    @scope.push(scope)
+    proc.call
+    @scope.pop
+  end
+
+  def scope
+    @scope.join
   end
 
   def routes

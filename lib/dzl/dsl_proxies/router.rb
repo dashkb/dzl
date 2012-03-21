@@ -13,6 +13,13 @@ class Dzl::DSLProxies::Router < Dzl::DSLProxy
   end
   alias_method :parameters, :pblock
 
+  def scope(path)
+    raise ArgumentError unless block_given?
+    raise ArgumentError.new("scope must start with a '/'") unless path.starts_with?('/')
+
+    @subject.call_with_scope(Proc.new, path)
+  end
+
   def endpoint(route, *request_methods)
     request_methods = [:get] if request_methods.empty?
     request_methods.uniq!
@@ -22,7 +29,12 @@ class Dzl::DSLProxies::Router < Dzl::DSLProxy
       request_methods: request_methods
     }
 
-    ept = Dzl::DSLSubjects::Endpoint.new(route, opts, @subject)
+    ept = Dzl::DSLSubjects::Endpoint.new(
+      [@subject.scope, route].join,
+      opts,
+      @subject
+    )
+
     @subject.add_endpoint(ept)
     @subject.call_with_subject(Proc.new, ept) if block_given?
   end
