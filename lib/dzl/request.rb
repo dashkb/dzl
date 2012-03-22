@@ -19,7 +19,8 @@ class Dzl::Request < Rack::Request
   end
 
   def params
-    @params ||= super
+    @request_body ||= body.read
+    @params ||= super.merge(json_params)
   end
 
   def overwrite_headers(new_headers)
@@ -50,5 +51,10 @@ class Dzl::Request < Rack::Request
 
   def silent?
     @silent == true
+  end
+
+  protected
+  def json_params
+    (content_type == "application/json") ? JSON.parse(@request_body) : {}
   end
 end

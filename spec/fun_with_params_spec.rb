@@ -209,14 +209,14 @@ describe Dzl::Examples::FunWithParams do
         'steak' => 'eww',
         'sunshine' => 9
       }.to_json
-      header "HTTP_ACCEPT", "application/json"
-      post('/rofl/haha?more=true', example_body) do |response|
+      header "Content-Type", "application/json"
+      post('/rofl/haha?more=vars', example_body) do |response|
         response.successful?.should be_true
         params = JSON.parse(response.body)['params']
         params['copter'].should == 'haha'
         params['candy'].should == [1, 3, 4]
         params['sunshine'].should == 9
-        params['more'].should == true
+        params['more'].should == "vars"
       end
     end
   end
