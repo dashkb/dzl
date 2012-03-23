@@ -47,7 +47,7 @@ class Dzl::DSLSubjects::Parameter < Dzl::DSLSubject
   # Returns a symbol describe the error if error,
   # returns the transformed value if not
   # TODO symbol values?
-  def validate(input)
+  def validate(input, opts = {})
     # Validate type
     unless input
       if @opts[:required]
@@ -61,7 +61,21 @@ class Dzl::DSLSubjects::Parameter < Dzl::DSLSubject
       end
     end
 
-    input = convert_type(input)
+    input = begin
+      if opts[:preformatted]
+        if input.is_a?(param_type)
+          Dzl::ValueOrError.new(
+            v: input
+          )
+        else
+          Dzl::ValueOrError.new(
+            e: :type_conversion_error
+          )
+        end
+      else
+        convert_type(input)
+      end
+    end
     return input if input.error?
 
     input = prevalidate_transform(input.value)

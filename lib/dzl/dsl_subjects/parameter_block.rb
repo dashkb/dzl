@@ -17,12 +17,14 @@ class Dzl::DSLSubjects::ParameterBlock < Dzl::DSLSubject
       pname, param = pary
       parandidate_key = param.opts[:header] ? :headers : :params
 
-      # verror = value or error.
-      verror = @params[pname].validate(parandidates[parandidate_key][pname])
-      if verror.error?
-        errors[pname] = verror.error
+      param = @params[pname].validate(parandidates[parandidate_key][pname], {
+        preformatted: request.preformatted_keys.include?(pname)
+      })
+
+      if param.error?
+        errors[pname] = param.error
       else
-        parandidates[parandidate_key][pname] = verror.value unless verror.value == :__no_value__
+        parandidates[parandidate_key][pname] = param.value unless param.value == :__no_value__
       end
     end || {}
 

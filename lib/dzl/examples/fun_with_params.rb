@@ -68,4 +68,11 @@ class Dzl::Examples::FunWithParams < Dzl::Examples::Base
   end
 
   endpoint '/foo/:bar'
+
+  endpoint '/rofl/:copter', :post do
+    optional(:candy) { type Array }
+    optional(:cookies, :sunshine) { type Fixnum }
+    optional :more
+    required :sunshine, :steak
+  end
 end
