@@ -219,5 +219,23 @@ describe Dzl::Examples::FunWithParams do
         params['more'].should == "vars"
       end
     end
+
+    it 'still validates types' do
+      example_body = {
+        'candy' => 'this-will-be-a-one-element-array',
+        'cookies' => ['o', 'o', 'p', 's'],
+        'steak' => 'eww',
+        'sunshine' => 9
+      }.to_json
+      header "Content-Type", "application/json"
+      post('/rofl/haha?more=vars', example_body) do |response|
+        response.successful?.should be_false
+        errors = JSON.parse(response.body)['errors']['/rofl/:copter']
+        errors.should == {
+          'cookies' => 'type_conversion_error',
+          'candy' => 'type_conversion_error'
+        }
+      end
+    end
   end
 end

@@ -1,10 +1,12 @@
 class Dzl::Request < Rack::Request
   attr_accessor :silent
+  attr_reader :preformatted_keys
 
   def initialize(env)
     super(env)
 
     @endpoints = Hash.new({})
+    @preformatted_keys = []
   end
 
   def headers
@@ -19,8 +21,14 @@ class Dzl::Request < Rack::Request
   end
 
   def params
-    @request_body ||= body.read
-    @params ||= super.merge(json_params)
+    @params ||= begin
+      @request_body = body.read
+      unless preformatted_params.empty?
+        @preformatted_keys = preformatted_params.keys.collect {|k| k.to_sym}
+      end
+
+      super.merge(preformatted_params)
+    end
   end
 
   def overwrite_headers(new_headers)
@@ -54,7 +62,7 @@ class Dzl::Request < Rack::Request
   end
 
   protected
-  def json_params
-    (content_type == "application/json") ? JSON.parse(@request_body) : {}
+  def preformatted_params
+    @preformatted_params ||= (content_type == "application/json") ? JSON.parse(@request_body) : {}
   end
 end
