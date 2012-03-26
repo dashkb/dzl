@@ -71,8 +71,8 @@ class Dzl::DSLSubjects::Endpoint < Dzl::DSLSubject
     @route_splits = @route.split('/').select{|s| not s.empty?}
 
     route_regex_string = @route_splits.collect do |route_part|
-      route_part.starts_with?(':') ? "/.*?" : "/#{route_part}"
-    end.push('$').join('')
+      route_part.starts_with?(':') ? "/[a-zA-Z0-9._~-]+" : "/#{route_part}"
+    end.push('/?$').join('')
 
     @route_regex = Regexp.new('^' + route_regex_string)
   end

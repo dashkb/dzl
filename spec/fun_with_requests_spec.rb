@@ -13,6 +13,13 @@ describe 'endpoint request method' do
     end
   end
 
+  it 'ignores an extra trailing slash' do
+    get('/foo/') do |response|
+      response.status.should == 200
+      response.body.should == 'get'
+    end
+  end
+
   it 'allows specification through endpoint options' do
     post('/post_op') do |response|
       response.status.should == 200
