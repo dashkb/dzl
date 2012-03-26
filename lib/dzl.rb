@@ -18,7 +18,7 @@ require 'dzl/dsl_subjects/parameter_block'
 require 'dzl/dsl_subjects/endpoint'
 
 module Dzl
-  class NYI < StandardError; end
+  class NYI < Dzl::Error; end
 
   def self.env
     ENV['RACK_ENV']
