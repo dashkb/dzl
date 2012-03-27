@@ -90,6 +90,17 @@ describe HashValidator do
       v.valid?({foo: [2, 3]}).should == true
       v.valid?({foo: [2], bar: [1, 'three']}).should == true
       v.valid?({foo: [2], bar: [4]}).should == false
+
+      v = HashValidator.new do
+        required :ary do
+          type Array
+          allowed_values [3, 5, 7]
+        end
+      end
+
+      v.valid?({
+        ary: [2, 4]
+      }).should == false
     end
   end
 
@@ -211,5 +222,23 @@ describe HashValidator do
         }
       }).should == true
     end
+  end
+
+  specify '.new instance_execs a block, if given' do
+    v = HashValidator.new do
+      required :hsh1 do
+        type Hash
+        required :str
+      end
+
+      required(:ary) { type Array }
+    end
+
+    v.valid?({
+      hsh1: {
+        str: 'hello'
+      },
+      ary: [1, 2, 3]
+    }).should == true
   end
 end

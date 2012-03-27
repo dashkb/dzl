@@ -42,6 +42,12 @@ class Dzl::DSLProxies::Parameter < Dzl::DSLProxy
   def type(type, type_opts = {})
     @subject.validations[:type] = type
     @subject.opts[:type_opts] = type_opts
+
+    if type == Hash && !type_opts.try_keys(:validator).is_a?(HashValidator)
+      raise ArgumentError.new("Must pass :validator, an instance of HashValidator")
+    elsif type == Hash && block_given?
+      type_opts[:validator].instance_exec(&Proc.new)
+    end
   end
 
   def integer

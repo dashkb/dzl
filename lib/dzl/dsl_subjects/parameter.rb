@@ -64,9 +64,21 @@ class Dzl::DSLSubjects::Parameter < Dzl::DSLSubject
     input = begin
       if opts[:preformatted]
         if input.is_a?(param_type)
-          Dzl::ValueOrError.new(
-            v: input
-          )
+          if param_type == Hash
+            if @opts[:type_opts][:validator].valid?(input)
+              Dzl::ValueOrError.new(
+                v: input
+              )
+            else
+              Dzl::ValueOrError.new(
+                e: :hash_validation_failed
+              )
+            end
+          else
+            Dzl::ValueOrError.new(
+              v: input
+            )
+          end
         else
           Dzl::ValueOrError.new(
             e: :type_conversion_error

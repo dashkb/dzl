@@ -1,5 +1,7 @@
 require 'active_support'
 require 'active_support/core_ext'
+require 'hash_validator'
+require 'dzl/core_ext'
 require 'dzl/version'
 require 'dzl/logger'
 require 'dzl/errors'

@@ -24,7 +24,7 @@ class Dzl::Request < Rack::Request
     @params ||= begin
       @request_body = body.read
       unless preformatted_params.empty?
-        @preformatted_keys = preformatted_params.keys.collect {|k| k.to_sym}
+        @preformatted_keys = preformatted_params.keys
       end
 
       super.merge(preformatted_params)
@@ -63,6 +63,12 @@ class Dzl::Request < Rack::Request
 
   protected
   def preformatted_params
-    @preformatted_params ||= (content_type == "application/json") ? JSON.parse(@request_body) : {}
+    @preformatted_params ||= begin
+      if content_type == "application/json"
+        JSON.parse(@request_body).recursively_symbolize_keys!
+      else
+        {}
+      end
+    end
   end
 end

@@ -1,4 +1,13 @@
 class HashValidator
+  class << self
+    alias_method :orig_new, :new
+    def new(*args)
+      v = orig_new(*args)
+      v.instance_exec(&Proc.new) if block_given?
+      v
+    end
+  end
+
   def initialize
     @template = {
       keys: {}

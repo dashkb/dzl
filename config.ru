@@ -40,7 +40,12 @@ end
 #   run Dzl::Examples::FunWithHooks
 # end
 
-require 'dzl/examples/fun_with_scopes'
+# require 'dzl/examples/fun_with_scopes'
+# map '/' do
+#   run Dzl::Examples::FunWithScopes
+# end
+
+require 'dzl/examples/fun_with_hashes'
 map '/' do
-  run Dzl::Examples::FunWithScopes
+  run Dzl::Examples::FunWithHashes
 end
