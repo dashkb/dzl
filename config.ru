@@ -45,7 +45,12 @@ end
 #   run Dzl::Examples::FunWithScopes
 # end
 
-require 'dzl/examples/fun_with_hashes'
+# require 'dzl/examples/fun_with_hashes'
+# map '/' do
+#   run Dzl::Examples::FunWithHashes
+# end
+
+require 'dzl/examples/fun_with_pblocks'
 map '/' do
-  run Dzl::Examples::FunWithHashes
+  run Dzl::Examples::FunWithPblocks
 end

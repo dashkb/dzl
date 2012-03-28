@@ -29,6 +29,11 @@ class Dzl::DSLSubjects::Parameter < Dzl::DSLSubject
   def dup_data
     @opts = @opts.clone
     @validations = @validations.clone
+    @validations.each do |k, v|
+      if v.kind_of?(Dzl::Validator)
+        @validations[k] = v.clone
+      end
+    end
     @dsl_proxy = Dzl::DSLProxies::Parameter.new(self)
   end
 

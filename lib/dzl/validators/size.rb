@@ -1,8 +1,8 @@
 module Dzl::Validators
   class Size < Dzl::Validator
     attr_reader :conditions
-    def initialize
-      @conditions = []
+    def initialize(conditions = {})
+      @conditions = conditions
     end
 
     def validate(input)
@@ -25,8 +25,13 @@ module Dzl::Validators
 
     [:==, :<=, :>=, :<, :>].each do |op|
       define_method(op) do |n|
-        @conditions << [op, n]
+        @conditions[op] = n
       end
+    end
+
+    def clone
+      dup_conditions = @conditions.clone
+      self.class.new(dup_conditions)
     end
   end
 end
