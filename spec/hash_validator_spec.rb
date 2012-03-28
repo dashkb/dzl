@@ -241,4 +241,38 @@ describe HashValidator do
       ary: [1, 2, 3]
     }).should == true
   end
+
+  context 'allows re-opening of keys for redefinition' do
+    specify 'for a simple type change' do
+      v = HashValidator.new do
+        required(:foo)
+      end
+
+      v.valid?({foo: 'hello'}).should == true
+
+      v.required(:foo) do
+        type Fixnum
+      end
+
+      v.valid?({foo: 'hello'}).should == false
+      v.valid?({foo: 4}).should == true
+    end
+
+    specify 'for new allowed_values' do
+      v = HashValidator.new do
+        required(:foo) do
+          allowed_values ['two', 'four', 'six']
+        end
+      end
+
+      v.valid?({foo: 'two'}).should == true
+
+      v.required(:foo) do
+        allowed_values ['one', 'three', 'five']
+      end
+
+      v.valid?({foo: 'two'}).should == false
+      v.valid?({foo: 'three'}).should == true
+    end
+  end
 end
