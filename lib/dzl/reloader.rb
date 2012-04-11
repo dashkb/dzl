@@ -38,7 +38,7 @@ class Dzl::Reloader
   end
 
   def updated_at
-    @files.collect {|f| File.mtime(f)}.max
+    @files.collect {|f| File.mtime(f)}.max || Time.new(0)
   end
 end
 
