@@ -7,7 +7,7 @@ class Dzl::DSLProxies::ParameterBlock < Dzl::DSLProxy
         # Don't clobber params we already know about
         @subject.params[name].overwrite_opts(opts)
       else
-        @subject.params[name] = Dzl::DSLSubjects::Parameter.new(name, opts)
+        @subject.params[name] = Dzl::DSLSubjects::Parameter.new(name, opts, @subject.router)
       end
 
       @subject.router.call_with_subject(Proc.new, @subject.params[name]) if block_given?

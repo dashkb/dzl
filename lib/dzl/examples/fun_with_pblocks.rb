@@ -23,4 +23,6 @@ class Dzl::Examples::FunWithPblocks < Dzl::Examples::Base
   get '/bar' do
     import_pblock :bar
   end
+
+  get '/'
 end

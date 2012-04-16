@@ -10,7 +10,9 @@ class Dzl::DSLSubjects::Router < Dzl::DSLSubject
     @endpoints_by_route = {}
     @stack = []
     @scope = []
-    @defaults = {}
+    @defaults = {
+      array_separator: ' '
+    }
     @defaults_dslsub = Dzl::DSLSubjects::Defaults.new(self)
     @dsl_proxy = Dzl::DSLProxies::Router.new(self)
     @app = app

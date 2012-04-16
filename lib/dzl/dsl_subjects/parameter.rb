@@ -11,13 +11,14 @@ class Dzl::DSLSubjects::Parameter < Dzl::DSLSubject
   attr_reader :validations, :opts
   attr_writer :default
 
-  def initialize(name, opts)
+  def initialize(name, opts, router)
     @name = name
     @opts = opts
     @validations = {
       type: String
     }
     @dsl_proxy = Dzl::DSLProxies::Parameter.new(self)
+    @router = router
   end
 
   def clone

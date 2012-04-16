@@ -14,7 +14,7 @@ class Dzl::DSLSubjects::Parameter
       elsif param_type == Array
         v = Dzl::ValueOrError.new(
           v: input.split(
-            (@opts[:type_opts][:separator] rescue nil) || ' '
+            (@opts[:type_opts][:separator] rescue nil) || @router.defaults[:array_separator]
           )
         )
 
