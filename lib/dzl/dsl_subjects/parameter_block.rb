@@ -16,10 +16,31 @@ class Dzl::DSLSubjects::ParameterBlock < Dzl::DSLSubject
     errors = @params.each_with_object({}) do |pary, errors|
       pname, param = pary
       parandidate_key = param.opts[:header] ? :headers : :params
+      parandidate = parandidates[parandidate_key][pname]
 
-      param = @params[pname].validate(parandidates[parandidate_key][pname], {
-        preformatted: request.preformatted_keys.include?(pname)
-      })
+      if param.opts[:type] == Hash
+        param = if parandidate.nil? && param.opts[:required]
+          Dzl::ValueOrError.new(e: param.opts[:header] ? :missing_required_header : :missing_required_param)
+        else
+          unless parandidate.is_a?(Hash)
+            if param.opts[:format] == :json
+              parandidate = JSON.parse(parandidate).recursively_symbolize_keys! rescue nil
+            end
+          end
+
+          if parandidate.nil?
+            Dzl::ValueOrError.new(e: :type_conversion_failed)
+          elsif param.valid?(parandidate)
+            Dzl::ValueOrError.new(v: parandidate)
+          else
+            Dzl::ValueOrError.new(e: :hash_validation_failed)
+          end
+        end
+      else
+        param = param.validate(parandidate, {
+          preformatted: request.preformatted_keys.include?(pname)
+        })
+      end
 
       if param.error?
         errors[pname] = param.error

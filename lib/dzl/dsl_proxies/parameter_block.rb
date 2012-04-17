@@ -1,19 +1,28 @@
 class Dzl::DSLProxies::ParameterBlock < Dzl::DSLProxy
-  def parameter(*names)
+  def parameter(*names, &block)
     opts = names.last.is_a?(Hash) ? names.pop : {required: false}
 
     names.each do |name|
-      if @subject.params[name]
-        # Don't clobber params we already know about
-        @subject.params[name].overwrite_opts(opts)
-      else
-        @subject.params[name] = Dzl::DSLSubjects::Parameter.new(name, opts, @subject.router)
-      end
-
-      @subject.router.call_with_subject(Proc.new, @subject.params[name]) if block_given?
+      single_parameter(name, opts, &block)
     end
   end
   alias_method :param, :parameter
+
+  def single_parameter(name, opts, &block)
+    if @subject.params[name] && !opts[:retry]
+      # Don't clobber params we already know about
+      @subject.params[name].overwrite_opts(opts)
+    else
+      @subject.params[name] = opts[:subject] || Dzl::DSLSubjects::Parameter.new(name, opts, @subject.router)
+    end
+
+    begin
+      @subject.router.call_with_subject(Proc.new, @subject.params[name]) if block_given?
+    rescue Dzl::RetryBlockPlease => e
+      @subject.router.__evil_subject_pop
+      single_parameter(name, opts.merge(retry: true, subject: e[:subject]), &block)
+    end
+  end
 
   def required(*names, &block)
     opts = names.last.is_a?(Hash) ? names.pop : {}

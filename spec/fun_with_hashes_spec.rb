@@ -7,7 +7,7 @@ describe 'hash parameters' do
   def app; Dzl::Examples::FunWithHashes; end
 
   context 'DSL' do
-    specify 'hash parameters must have a validator, for now' do
+    specify 'DEPRECATED: hash parameters must have a validator, for now' do
       expect {
         class T1 < Dzl::Examples::Base
           get '/foo' do
@@ -16,7 +16,7 @@ describe 'hash parameters' do
             end
           end
         end
-      }.to raise_exception(ArgumentError)
+      }.to_not raise_exception(ArgumentError)
 
       expect {
         class T1 < Dzl::Examples::Base
@@ -26,7 +26,53 @@ describe 'hash parameters' do
             end
           end
         end
-      }.to_not raise_exception(ArgumentError)
+      }.to raise_exception(Dzl::Deprecated)
+    end
+
+    specify 'hash parameters retry their blocks against a hash validator' do
+      HashValidator.any_instance.should_receive(:key).with(:key, {required: true, type: String})
+      class T1 < Dzl::Examples::Base
+        get '/foo' do
+          required :bar do
+            type Hash
+            required(:key) do
+              type Array
+            end
+          end
+        end
+      end
+    end
+
+    specify 'hash validator is built properly for required params' do
+      class T1 < Dzl::Examples::Base
+        get '/foo' do
+          required :bar do
+            type Hash
+            self.subject.opts.should == {type: Hash, required: true, format: :json}
+
+            required(:key) do
+              self.subject.should_receive(:add_option).with(:type, Array)
+              type Array
+            end
+          end
+        end
+      end
+    end
+
+    specify 'nested hashes do not retry their blocks against a new hash validator' do
+      class T1 < Dzl::Examples::Base
+        get '/foo' do
+          required :bar do
+            type Hash
+            HashValidator.any_instance.should_receive(:key)
+            required(:nested) do
+              HashValidator.any_instance.should_not_receive(:new)
+              HashValidator.any_instance.should_receive(:add_option).with(:type, Hash)
+              type Hash
+            end
+          end
+        end
+      end
     end
   end
 
@@ -66,6 +112,35 @@ describe 'hash parameters' do
       post('/h', valid_body.to_json).status.should == 200
       post('/h', missing_foo.to_json).status.should == 404
       post('/h', invalid_body.to_json).status.should == 404
+    end
+  end
+
+  context 'mixed input' do
+    specify 'is fine' do
+      valid = {
+        hsh: {
+          zim: 'ok',
+          zam: 'sweet'
+        }.to_json,
+        ary: ['one', 'three'].join('|')
+      }
+
+      get('/mixed', valid).status.should == 200
+      JSON.parse(get('/mixed', valid.except(:ary)).body)['errors']['/mixed'].should == {
+        'ary' => 'missing_required_param'
+      }
+    end
+
+    specify 'hashes can have & and = and ? in them' do
+      valid = {
+        hsh: {
+          zim: 'ok?',
+          zam: 'swe&et=omg'
+        }.to_json,
+        ary: ['one', 'three'].join('|')
+      }
+
+      get('/mixed', valid).status.should == 200
     end
   end
 end

@@ -20,9 +20,13 @@ class Dzl::Request < Rack::Request
     end
   end
 
+  alias_method :orig_body, :body
+  def body
+    @request_body ||= orig_body.read
+  end
+
   def params
     @params ||= begin
-      @request_body = body.read
       unless preformatted_params.empty?
         @preformatted_keys = preformatted_params.keys
       end
@@ -65,7 +69,7 @@ class Dzl::Request < Rack::Request
   def preformatted_params
     @preformatted_params ||= begin
       if content_type == "application/json"
-        JSON.parse(@request_body).recursively_symbolize_keys!
+        JSON.parse(body).recursively_symbolize_keys!
       else
         {}
       end

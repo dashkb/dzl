@@ -43,10 +43,16 @@ class Dzl::DSLProxies::Parameter < Dzl::DSLProxy
     @subject.validations[:type] = type
     @subject.opts[:type_opts] = type_opts
 
-    if type == Hash && !type_opts.try_keys(:validator).is_a?(HashValidator)
-      raise ArgumentError.new("Must pass :validator, an instance of HashValidator")
-    elsif type == Hash && block_given?
-      type_opts[:validator].instance_exec(&Proc.new)
+    if type == Hash && type_opts.has_key?(:validator)
+      raise Dzl::Deprecated.new("The hash validator syntax is no longer supported.")
+    end
+
+    if type == Hash
+      raise Dzl::RetryBlockPlease.new(
+        subject: HashValidator.new(
+          @subject.opts.except(:type_opts).reverse_merge(format: :json)
+        )
+      )
     end
   end
 

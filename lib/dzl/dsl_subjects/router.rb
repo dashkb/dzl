@@ -24,6 +24,10 @@ class Dzl::DSLSubjects::Router < Dzl::DSLSubject
     @stack.pop
   end
 
+  def __evil_subject_pop
+    @stack.pop
+  end
+
   def subject
     @stack.last
   end

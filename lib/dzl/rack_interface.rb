@@ -89,8 +89,9 @@ module Dzl::RackInterface
   end
 
   def log_request(request, response, seconds)
-    logger.info "#{request.request_method} #{request.path}"
-    logger.info "PARAMS: #{request.params}"
-    logger.info "#{response[0]} in #{seconds * 1000}ms"
+    logger.info  "#{request.request_method} #{request.path}"
+    logger.info  "PARAMS: #{request.params}"
+    logger.debug "BODY: #{request.body}" unless request.body.blank?
+    logger.info  "#{response[0]} in #{seconds * 1000}ms"
   end
 end

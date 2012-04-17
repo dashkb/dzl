@@ -1,4 +1,6 @@
 class HashValidator
+  attr_reader :dsl_proxy
+
   class << self
     alias_method :orig_new, :new
     def new(*args)
@@ -8,13 +10,18 @@ class HashValidator
     end
   end
 
-  def initialize
+  def initialize(opts = {})
     @template = {
-      keys: {}
+      keys: {},
+      opts: opts
     }
 
     @key_stack = []
     @dsl_proxy = DSLProxy.new(self)
+  end
+
+  def opts
+    @template[:opts]
   end
 
   def valid?(hsh)
@@ -88,6 +95,8 @@ class HashValidator
   end
 
   class DSLProxy
+    attr_reader :subject
+
     def initialize(subject)
       @subject = subject
     end
@@ -100,12 +109,18 @@ class HashValidator
       @subject.key(k, opts, &block)
     end
 
-    def optional(k, opts = {}, &block)
-      key(k, opts.merge({required: false}), &block)
+    def optional(*args, &block)
+      opts = args.last.is_a?(Hash) ? args.pop : {}
+      args.each do |key|
+        key(key, opts.merge({required: false}), &block)
+      end
     end
 
-    def required(k, opts = {}, &block)
-      key(k, opts.merge({required: true}), &block)
+    def required(*args, &block)
+      opts = args.last.is_a?(Hash) ? args.pop : {}
+      args.each do |key|
+        key(key, opts.merge({required: true}), &block)
+      end
     end
 
     def type(klass)

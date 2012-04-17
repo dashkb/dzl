@@ -6,6 +6,10 @@ class Dzl::Error < StandardError
     @status = 500
   end
 
+  def [](key)
+    @data[key]
+  end
+
   def to_json
     {
       status: @status,
@@ -31,3 +35,6 @@ class Dzl::BadRequest < Dzl::RequestError
     @status = 400
   end
 end
+
+class Dzl::RetryBlockPlease < Dzl::Error; end
+class Dzl::Deprecated < Dzl::Error; end
