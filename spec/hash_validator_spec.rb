@@ -7,6 +7,7 @@ describe HashValidator do
       ok = {foo: 'bar', bar: 'foo'}
       also_ok = {foo: 'bar'}
       bad = {bar: 'foo'}
+      extra = ok.merge(extra: 'bad')
 
       v = HashValidator.new
       v.required(:foo)
@@ -16,6 +17,8 @@ describe HashValidator do
       v.valid?(bad).should == false
 
       v.valid?(also_ok).should == true
+
+      v.valid?(extra).should == false
     end
   end
 

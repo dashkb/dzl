@@ -25,6 +25,8 @@ class HashValidator
   end
 
   def valid?(hsh)
+    return false unless hsh.keys.all? { |key| top[:keys].include?(key) }
+
     top[:keys].each do |k, v|
       if !hsh.has_key?(k)
         if v[:opts][:required]
