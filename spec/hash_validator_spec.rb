@@ -3,18 +3,20 @@ require 'hash_validator'
 
 describe HashValidator do
   context 'required/optional keys' do
-    ok = {foo: 'bar', bar: 'foo'}
-    also_ok = {foo: 'bar'}
-    bad = {bar: 'foo'}
+    specify 'work as expected' do
+      ok = {foo: 'bar', bar: 'foo'}
+      also_ok = {foo: 'bar'}
+      bad = {bar: 'foo'}
 
-    v = HashValidator.new
-    v.required(:foo)
-    v.optional(:bar)
+      v = HashValidator.new
+      v.required(:foo)
+      v.optional(:bar)
 
-    v.valid?(ok).should == true
-    v.valid?(bad).should == false
+      v.valid?(ok).should == true
+      v.valid?(bad).should == false
 
-    v.valid?(also_ok).should == true
+      v.valid?(also_ok).should == true
+    end
   end
 
   context 'key type specification' do
