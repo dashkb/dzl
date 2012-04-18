@@ -62,4 +62,10 @@ class Dzl::Examples::FunWithHooks < Dzl::Examples::Base
       raise Dzl::BadRequest.new("This isn't quite what I was expecting")
     end
   end
+
+  endpoint '/validation_error' do
+    after_validate do
+      raise Dzl::ValidationError.new(any: 'hash', i: 'want')
+    end
+  end
 end

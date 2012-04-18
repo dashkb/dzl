@@ -35,6 +35,14 @@ class Dzl::ResponseContext
     end
 
     @response
+  rescue Dzl::ValidationError => e
+    @response.status = 404
+    @response.write({
+      errors: {
+        @endpoint.route => e.data
+      }
+    }.to_json)
+    @response
   end
 
   def __build_response_with_defaults__

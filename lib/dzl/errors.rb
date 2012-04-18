@@ -38,3 +38,4 @@ end
 
 class Dzl::RetryBlockPlease < Dzl::Error; end
 class Dzl::Deprecated < Dzl::Error; end
+class Dzl::ValidationError < Dzl::RequestError; end

@@ -57,5 +57,15 @@ describe 'FunWithHooks' do
         JSON.parse(response.body)['errors'].should == "This isn't quite what I was expecting"
       end
     end
+
+    it 'are good places to raise Dzl::ValidationError' do
+      get('/validation_error') do |response|
+        response.status.should == 404
+        JSON.parse(response.body)['errors']['/validation_error'].should == {
+          'any' => 'hash',
+          'i' => 'want'
+        }
+      end
+    end
   end
 end

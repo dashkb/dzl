@@ -30,4 +30,13 @@ class Dzl::Examples::FunWithHandlers < Dzl::Examples::Base
       raise 'omg'
     end
   end
+
+  get '/validation_error' do
+    handle do
+      raise Dzl::ValidationError.new(
+        any: 'hash',
+        i: 'want'
+      )
+    end
+  end
 end

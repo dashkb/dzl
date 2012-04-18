@@ -63,8 +63,8 @@ module Dzl::RackInterface
     response = Rack::Response.new
     response.headers['Content-Type'] = 'application/json'
 
-    if e.is_a?(Dzl::RequestError)
-      response.status = e.status
+    if e.is_a?(Dzl::ValidationError)
+      response.status = 404
       response.write(e.to_json)
     else
       response.status = e.status
