@@ -36,6 +36,18 @@ class Dzl::Examples::FunWithParams < Dzl::Examples::Base
     end
   end
 
+  post '/body' do
+    required :foo, :bar
+  end
+
+  post '/other_protected', :get do
+    required :foo
+
+    protect do
+      http_basic username: 'no', password: 'way'
+    end
+  end
+
   endpoint '/arithmetic' do
     optional :int do
       type Fixnum

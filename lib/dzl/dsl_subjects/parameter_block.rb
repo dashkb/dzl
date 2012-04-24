@@ -57,18 +57,20 @@ class Dzl::DSLSubjects::ParameterBlock < Dzl::DSLSubject
       end
     end
 
-    if !errors.empty?
-      Dzl::ValueOrError.new(e: errors)
-    elsif @opts[:protection]
+    if @opts[:protection]
       protection_errors = @opts[:protection].collect do |protection|
         protection.allow?(parandidates, request)
       end.select { |result| result.error? }
 
-      if protection_errors.empty?
+      if protection_errors.empty? && errors.empty?
         Dzl::ValueOrError.new(v: parandidates)
+      elsif !protection_errors.empty?
+        protection_errors.first
       else
-        protection_errors[0]
+        Dzl::ValueOrError.new(e: errors)
       end
+    elsif !errors.empty?
+      Dzl::ValueOrError.new(e: errors)
     else
       Dzl::ValueOrError.new(v: parandidates)
     end

@@ -126,6 +126,14 @@ describe Dzl::Examples::FunWithParams do
       get '/protected' do |response|
         response.status.should == 401
       end
+
+      post '/other_protected', foo: 'present' do |response|
+        response.status.should == 401
+      end
+
+      get '/other_protected' do |response|
+        response.status.should == 401
+      end
     end
 
     it 'should present the http basic challenge with invalid credentials' do
@@ -139,6 +147,17 @@ describe Dzl::Examples::FunWithParams do
       authorize('no', 'way')
       get '/protected' do |response|
         response.status.should == 200
+      end
+
+      post '/other_protected', foo: 'present' do |response|
+        response.status.should == 200
+      end
+    end
+
+    it 'should 404 with valid auth and bad params' do
+      authorize('no', 'way')
+      post '/other_protected' do |response|
+        response.status.should == 404
       end
     end
   end
@@ -235,6 +254,14 @@ describe Dzl::Examples::FunWithParams do
           'cookies' => 'type_conversion_error',
           'candy' => 'type_conversion_error'
         }
+      end
+    end
+
+    describe '/body' do
+      specify 'works' do
+        post('/body', foo: 'hello', bar: 'world') do |response|
+          response.status.should == 200
+        end
       end
     end
   end
