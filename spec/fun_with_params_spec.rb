@@ -159,6 +159,16 @@ describe Dzl::Examples::FunWithParams do
       post '/other_protected' do |response|
         response.status.should == 404
       end
+
+      get '/other_protected' do |response|
+        response.status.should == 404
+      end
+    end
+
+    it 'should 401 with invalid auth' do
+      get '/other_protected' do |response|
+        response.status.should == 401
+      end
     end
   end
 
