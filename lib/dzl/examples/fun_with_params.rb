@@ -48,6 +48,12 @@ class Dzl::Examples::FunWithParams < Dzl::Examples::Base
     end
   end
 
+  endpoint '/api' do
+    protect do
+      api_key header: 'x_api_key', valid_keys: ['valid-key']
+    end
+  end
+
   endpoint '/arithmetic' do
     optional :int do
       type Fixnum

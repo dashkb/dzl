@@ -99,6 +99,11 @@ class Dzl::DSLSubjects::Router < Dzl::DSLSubject
       raise Dzl::RespondWithHTTPBasicChallenge
     end
 
+    if !errors.empty? &&
+        errors.values.any? {|v| v == :no_api_key || v == :invalid_api_key}
+      raise Dzl::RespondWithInvalidAPIKey
+    end
+
     endpoint || raise(Dzl::NotFound.new(errors))
   end
   
