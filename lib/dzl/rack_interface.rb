@@ -10,23 +10,24 @@ module Dzl::RackInterface
     request = nil
     start_time = Time.now
     start_profile if PROFILE_REQUESTS
-    response = begin
+    response, error = begin
       request = Dzl::Request.new(env)
-      __router.handle_request(request)
+      [__router.handle_request(request), nil]
     rescue Dzl::RespondWithHTTPBasicChallenge
-      respond_with_http_basic_challenge
+      [respond_with_http_basic_challenge, nil]
     rescue Dzl::Error => e
-      respond_with_dzl_error_handler(e)
+      [respond_with_dzl_error_handler(e), e]
     rescue StandardError => e
-      respond_with_standard_error_handler(e)
+      [respond_with_standard_error_handler(e), e]
     end
 
     if response[0] < 100
-      response = respond_with_standard_error_handler(StandardError.new('Application did not respond'))
+      error = Dzl::Error.new('Application did not respond')
+      response = respond_with_standard_error_handler(error)
     end
 
     stop_profiling_and_print if PROFILE_REQUESTS
-    log_request(request, response, (Time.now - start_time)) unless request.silent?
+    log_request(request, response, (Time.now - start_time), error) unless request.silent?
 
     if Dzl.production? || Dzl.staging?
       (response[0] < 500) ? response : [response[0], [], [response[0].to_s]]
@@ -88,10 +89,17 @@ module Dzl::RackInterface
     )
   end
 
-  def log_request(request, response, seconds)
+  def log_request(request, response, seconds, error)
     logger.info  "#{request.request_method} #{request.path}"
     logger.info  "PARAMS: #{request.params}"
     logger.debug "BODY: #{request.body}" unless request.body.blank?
     logger.info  "#{response[0]} in #{seconds * 1000}ms"
+    
+    if error.present?
+      logger.info error.inspect
+      error.backtrace.each do |line|
+        logger.info "  #{line}"
+      end
+    end
   end
 end
