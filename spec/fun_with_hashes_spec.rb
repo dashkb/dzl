@@ -175,4 +175,17 @@ describe 'hash parameters' do
       get('/mixed', valid).status.should == 200
     end
   end
+
+  context "eli's bug" do
+    specify 'omitted optional hashes are OK' do
+      post('/elis_bug', {hash: {id: 1}.to_json}) do |response|
+        response.status.should == 200
+      end
+
+      post('/elis_bug') do |response|
+        JSON.parse(response.body)['errors'].should == nil
+        response.status.should == 200
+      end
+    end
+  end
 end

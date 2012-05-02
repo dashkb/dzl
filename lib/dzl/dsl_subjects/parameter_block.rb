@@ -21,6 +21,9 @@ class Dzl::DSLSubjects::ParameterBlock < Dzl::DSLSubject
       if param.opts[:type] == Hash
         param = if parandidate.nil? && param.opts[:required]
           Dzl::ValueOrError.new(e: param.opts[:header] ? :missing_required_header : :missing_required_param)
+        elsif parandidate.nil?
+          # TODO HashValidator with default values
+          Dzl::ValueOrError.new(v: :__no_value__)
         else
           unless parandidate.is_a?(Hash)
             if param.opts[:format] == :json

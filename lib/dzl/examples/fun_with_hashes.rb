@@ -50,4 +50,11 @@ class Dzl::Examples::FunWithHashes < Dzl::Examples::Base
   post '/another_boring_sandwich' do
     import_pblock :ingredients
   end
+
+  post '/elis_bug' do
+    optional :hash do
+      type Hash
+      optional(:id) { type Fixnum }
+    end
+  end
 end
