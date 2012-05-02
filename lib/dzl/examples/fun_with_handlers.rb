@@ -5,6 +5,18 @@ class Dzl::Examples::FunWithHandlers < Dzl::Examples::Base
     content_type 'application/json'
   end
 
+  error_hook do |e|
+    Object.first_error_hook
+  end
+
+  error_hook do |e|
+    Object.second_error_hook
+
+    if e.to_s.match('explode')
+      raise 'explode'
+    end
+  end
+
   endpoint '/say_bar' do
     optional :foo, :bar, :baz, :bam
 
@@ -28,6 +40,12 @@ class Dzl::Examples::FunWithHandlers < Dzl::Examples::Base
   get '/raise' do
     handle do
       raise 'omg'
+    end
+  end
+
+  get '/explode' do
+    handle do
+      raise 'explode'
     end
   end
 

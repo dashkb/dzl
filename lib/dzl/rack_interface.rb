@@ -16,7 +16,7 @@ module Dzl::RackInterface
     rescue Dzl::RespondWithHTTPBasicChallenge
       [respond_with_http_basic_challenge, nil]
     rescue Dzl::Error => e
-      [respond_with_dzl_error_handler(e), e]
+      [respond_with_dzl_error_handler(e), nil]
     rescue StandardError => e
       [respond_with_standard_error_handler(e), e]
     end
@@ -24,6 +24,12 @@ module Dzl::RackInterface
     if response[0] < 100
       error = Dzl::Error.new('Application did not respond')
       response = respond_with_standard_error_handler(error)
+    end
+
+    if error.present?
+      __router.error_hooks.each do |hook|
+        hook.call(error) rescue nil
+      end
     end
 
     stop_profiling_and_print if PROFILE_REQUESTS

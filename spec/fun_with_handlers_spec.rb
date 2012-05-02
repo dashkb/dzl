@@ -29,8 +29,20 @@ describe 'handlers' do
     end
   end
 
-  it 'can raise exceptions without exploding everything' do
+  it 'calls error hooks on errors' do
+    Object.should_receive(:first_error_hook)
+    Object.should_receive(:second_error_hook)
+
     get '/raise' do |response|
+      response.status.should == 500
+    end
+  end
+
+  it 'exceptions raised in error hooks are squashed, sorry' do
+    Object.should_receive(:first_error_hook)
+    Object.should_receive(:second_error_hook)
+
+    get '/explode' do |response|
       response.status.should == 500
     end
   end

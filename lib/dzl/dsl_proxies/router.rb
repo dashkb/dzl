@@ -46,6 +46,12 @@ class Dzl::DSLProxies::Router < Dzl::DSLProxy
     @subject.call_with_subject(Proc.new, @subject.defaults_dslsub)
   end
 
+  def error_hook(&block)
+    raise ArgumentError unless block_given?
+
+    @subject.error_hooks << block
+  end
+
   REQUEST_METHODS.each do |m|
     define_method(m) do |route, *request_methods, &block|
       request_methods << m

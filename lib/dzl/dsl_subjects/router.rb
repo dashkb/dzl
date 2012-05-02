@@ -3,7 +3,7 @@ require 'dzl/dsl_subjects/defaults'
 
 class Dzl::DSLSubjects::Router < Dzl::DSLSubject
   include Dzl::RouterDoc
-  attr_reader :pblocks, :defaults_dslsub, :defaults, :app
+  attr_reader :pblocks, :defaults_dslsub, :defaults, :app, :error_hooks
 
   def initialize(app)
     @pblocks = {}
@@ -16,6 +16,7 @@ class Dzl::DSLSubjects::Router < Dzl::DSLSubject
     @defaults_dslsub = Dzl::DSLSubjects::Defaults.new(self)
     @dsl_proxy = Dzl::DSLProxies::Router.new(self)
     @app = app
+    @error_hooks = []
   end
 
   def call_with_subject(proc, subject)
