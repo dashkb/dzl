@@ -29,8 +29,8 @@ class Dzl::DSLSubjects::Router < Dzl::DSLSubject
     @stack.pop
   end
 
-  def subject
-    @stack.last
+  def subject(n = 1)
+    @stack[-1 * n]
   end
 
   def call_with_scope(proc, scope)

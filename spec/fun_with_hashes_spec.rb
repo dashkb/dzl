@@ -29,6 +29,16 @@ describe 'hash parameters' do
       }.to raise_exception(Dzl::Deprecated)
     end
 
+    specify 'NYI: hash parameters are currently only allowed in anonymous pblocks' do
+      expect {
+        class T1 < Dzl::Examples::Base
+          pblock :broken do
+            required(:foo) { type Hash }
+          end
+        end
+      }.to raise_error(Dzl::NYI)
+    end
+
     specify 'hash parameters retry their blocks against a hash validator' do
       HashValidator.any_instance.should_receive(:key).with(:key, {required: true, type: String})
       class T1 < Dzl::Examples::Base

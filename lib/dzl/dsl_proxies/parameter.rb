@@ -48,6 +48,10 @@ class Dzl::DSLProxies::Parameter < Dzl::DSLProxy
     end
 
     if type == Hash
+      unless @subject.router.subject(2).is_a?(Dzl::DSLSubjects::Endpoint)
+        raise Dzl::NYI.new("Hash parameters may only be specified in endpoints, for now")
+      end
+
       raise Dzl::RetryBlockPlease.new(
         subject: HashValidator.new(
           @subject.opts.except(:type_opts).reverse_merge(format: :json)
