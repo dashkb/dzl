@@ -15,6 +15,8 @@ module Dzl::RackInterface
       [__router.handle_request(request), nil]
     rescue Dzl::RespondWithHTTPBasicChallenge
       [respond_with_http_basic_challenge, nil]
+    rescue Dzl::RespondWithInvalidAPIKey
+      [respond_with_invalid_api_key, nil]
     rescue Dzl::Error => e
       [respond_with_dzl_error_handler(e), nil]
     rescue StandardError => e
@@ -45,6 +47,14 @@ module Dzl::RackInterface
   def respond_with_http_basic_challenge
     response = Rack::Response.new
     response['WWW-Authenticate'] = %(Basic realm="Dzl HTTP Basic")
+    response.status = 401
+    response.headers['Content-Type'] = 'text/html'
+    response.write("Not Authorized\n")
+    response.finish
+  end
+
+  def respond_with_invalid_api_key
+    response = Rack::Response.new
     response.status = 401
     response.headers['Content-Type'] = 'text/html'
     response.write("Not Authorized\n")
