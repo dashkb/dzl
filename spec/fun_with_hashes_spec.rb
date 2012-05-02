@@ -29,16 +29,6 @@ describe 'hash parameters' do
       }.to raise_exception(Dzl::Deprecated)
     end
 
-    specify 'NYI: hash parameters are currently only allowed in anonymous pblocks' do
-      expect {
-        class T1 < Dzl::Examples::Base
-          pblock :broken do
-            required(:foo) { type Hash }
-          end
-        end
-      }.to raise_error(Dzl::NYI)
-    end
-
     specify 'hash parameters retry their blocks against a hash validator' do
       HashValidator.any_instance.should_receive(:key).with(:key, {required: true, type: String})
       class T1 < Dzl::Examples::Base
@@ -82,6 +72,38 @@ describe 'hash parameters' do
             end
           end
         end
+      end
+    end
+  end
+
+  context 'importing & reopening' do
+    specify 'works, basically' do
+      boring_sandwich = {
+        bread: 'multi-grain',
+        meat: 'roast beast',
+        cheese: 'swiss'
+      }
+
+      awesome_sandwich = {
+        bread: 'sourdough',
+        meat: ['roast beast', 'salami', 'turkey'],
+        cheese: 'cheddar'
+      }
+
+      post('/boring_sandwich', {ingredients: boring_sandwich.to_json}) do |response|
+        response.status.should == 200
+      end
+
+      post('/awesome_sandwich', {ingredients: awesome_sandwich.to_json}) do |response|
+        response.status.should == 200
+      end
+
+      post('/another_boring_sandwich', {ingredients: awesome_sandwich.to_json}) do |response|
+        response.status.should == 404
+      end
+
+      post('/another_boring_sandwich', {ingredients: boring_sandwich.to_json}) do |response|
+        response.status.should == 200
       end
     end
   end

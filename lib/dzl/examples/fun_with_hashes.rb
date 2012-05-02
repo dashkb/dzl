@@ -28,4 +28,26 @@ class Dzl::Examples::FunWithHashes < Dzl::Examples::Base
       allowed_values %w{one two three}
     end
   end
+
+  pblock :ingredients do
+    required :ingredients do
+      type Hash
+      required :cheese, :meat, :bread
+    end
+  end
+
+  post '/boring_sandwich' do
+    import_pblock :ingredients
+  end
+
+  post '/awesome_sandwich' do
+    import_pblock :ingredients
+    parameter :ingredients do
+      required(:meat) { type Array }
+    end
+  end
+
+  post '/another_boring_sandwich' do
+    import_pblock :ingredients
+  end
 end

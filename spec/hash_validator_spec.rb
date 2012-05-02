@@ -280,4 +280,38 @@ describe HashValidator do
       v.valid?({foo: 'three'}).should == true
     end
   end
+
+  context 'cloning' do
+    before(:each) do
+      @original = HashValidator.new do
+        required(:foo)
+      end 
+    end
+
+    specify 'dupes the data in @template' do
+      orig_template = @original.instance_variable_get(:@template)
+
+      cloned = @original.clone
+
+      @original.instance_variable_get(:@template).object_id.should == orig_template.object_id
+      @original.instance_variable_get(:@template).object_id.should_not == cloned.instance_variable_get(:@template).object_id
+      @original.instance_variable_get(:@template).should == cloned.instance_variable_get(:@template)
+
+      cloned.required(:foo) { type Fixnum }
+
+      @original.instance_variable_get(:@template).should_not == cloned.instance_variable_get(:@template)
+      @original.instance_variable_get(:@template)[:keys][:foo][:opts][:type].should == String
+      cloned.instance_variable_get(:@template)[:keys][:foo][:opts][:type].should == Fixnum
+    end
+
+    specify 'validation works as expected' do
+      cloned = @original.clone
+      cloned.required(:foo) { type Fixnum }
+
+      @original.valid?({foo: 'hello'}).should == true
+      @original.valid?({foo: 1}).should == false
+      cloned.valid?({foo: 'hello'}).should == false
+      cloned.valid?({foo: 1}).should == true
+    end
+  end
 end

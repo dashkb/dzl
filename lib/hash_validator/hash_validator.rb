@@ -24,6 +24,16 @@ class HashValidator
     @template[:opts]
   end
 
+  def overwrite_opts(opts)
+    @template[:opts].merge(opts)
+  end
+
+  def clone
+    copy = HashValidator.new
+    copy.instance_variable_set(:@template, Marshal.load(Marshal.dump(@template)))
+    copy
+  end
+
   def valid?(hsh)
     return false unless hsh.keys.all? { |key| top[:keys].include?(key) }
 
@@ -71,7 +81,6 @@ class HashValidator
   def key(k, opts, &block)
     top[:keys][k] = {
       opts: opts,
-      block: block,
       keys: {}
     }
 
