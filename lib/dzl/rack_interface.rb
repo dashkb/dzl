@@ -38,7 +38,7 @@ module Dzl::RackInterface
     log_request(request, response, (Time.now - start_time), error) unless request.silent?
 
     if Dzl.production? || Dzl.staging?
-      (response[0] < 500) ? response : [response[0], [], [response[0].to_s]]
+      (response[0] < 400) ? response : [response[0], [], [{status: response[0]}.to_json]]
     else
       response
     end
