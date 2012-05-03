@@ -63,6 +63,11 @@ module Dzl
         end
       end
 
+      def router
+        raise ArgumentError unless block_given?
+        __router.dsl_proxy.instance_exec(&Proc.new)
+      end
+
       def respond_to?(m)
         orig_respond_to?(m) || (__router && __router.dsl_proxy.respond_to?(m))
       end
