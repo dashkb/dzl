@@ -23,7 +23,7 @@ class Dzl::DSLSubjects::ParameterBlock < Dzl::DSLSubject
           Dzl::ValueOrError.new(e: param.opts[:header] ? :missing_required_header : :missing_required_param)
         elsif parandidate.nil?
           # TODO HashValidator with default values
-          Dzl::ValueOrError.new(v: :__no_value__)
+          Dzl::ValueOrError.new(v: param.default_value)
         else
           unless parandidate.is_a?(Hash)
             if param.opts[:format] == :json

@@ -1,5 +1,6 @@
 class HashValidator
   attr_reader :dsl_proxy
+  attr_accessor :default_value
 
   class << self
     alias_method :orig_new, :new
@@ -18,6 +19,7 @@ class HashValidator
 
     @key_stack = []
     @dsl_proxy = DSLProxy.new(self)
+    @default_value = :__no_value__
   end
 
   def opts
@@ -145,6 +147,11 @@ class HashValidator
 
     def forbidden_values(ary)
       @subject.add_option(:forbidden_values, ary)
+    end
+
+    def default(hsh)
+      raise ArgumentError unless hsh.is_a?(Hash)
+      @subject.default_value = hsh
     end
   end
 end

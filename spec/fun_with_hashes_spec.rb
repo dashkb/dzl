@@ -188,4 +188,27 @@ describe 'hash parameters' do
       end
     end
   end
+
+  context 'default values' do
+    specify 'are not used when the parameter is present' do
+      post('/hash_with_default', {hash: {default: 'v2'}.to_json}) do |response|
+        response.status.should == 200
+        JSON.parse(response.body)['params']['hash']['default'].should == 'v2'
+      end
+    end
+
+    specify 'are used when the parameter is omitted' do
+      post('/hash_with_default') do |response|
+        response.status.should == 200
+        JSON.parse(response.body)['params']['hash']['default'].should == 'v1'
+      end
+    end
+
+    specify 'validations on provided parameter still work as expected' do
+      post('/hash_with_default', {hash: {default: 'bad'}.to_json}) do |response|
+        response.status.should == 404
+        JSON.parse(response.body)['errors']['/hash_with_default']['hash'].should == 'hash_validation_failed'
+      end
+    end
+  end
 end

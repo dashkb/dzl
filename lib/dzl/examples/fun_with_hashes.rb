@@ -57,4 +57,17 @@ class Dzl::Examples::FunWithHashes < Dzl::Examples::Base
       optional(:id) { type Fixnum }
     end
   end
+
+  post '/hash_with_default' do
+    optional :hash do
+      type Hash
+      default({
+        default: 'v1'
+      })
+
+      required :default do
+        allowed_values %w{v1 v2 v3}
+      end
+    end
+  end
 end
