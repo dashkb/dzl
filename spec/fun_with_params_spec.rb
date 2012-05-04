@@ -189,6 +189,23 @@ describe Dzl::Examples::FunWithParams do
     end
   end
 
+  describe '/api_proc' do
+    it 'should 401 if no api key provided' do
+      get '/api_proc'
+      last_response.status.should == 401
+    end
+
+    it 'should 401 if invalid api key provided' do
+      get '/api_proc', {}, {"HTTP_X_API_KEY" => 'bad-key'}
+      last_response.status.should == 401
+    end
+
+    it 'should accept valid api key' do
+      get '/api_proc', {}, {"HTTP_X_API_KEY" => 'valid-key'}
+      last_response.status.should == 200
+    end
+  end
+
   describe '/arithmetic' do
     it 'should not allow :int < 5' do
       get('/arithmetic', {int: 4}) do |response|

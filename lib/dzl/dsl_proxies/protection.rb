@@ -4,7 +4,8 @@ class Dzl::DSLProxies::Protection < Dzl::DSLProxy
     @subject.opts[:http_basic] = opts
   end
   def api_key(opts)
-    raise ArgumentError unless [:header, :valid_keys].all? {|k| opts[k].present?}
+    raise ArgumentError unless opts[:header].present?
+    raise ArgumentError unless [:validate_with, :valid_keys].one? {|k| opts[k].present?}
     @subject.opts[:api_key] = opts
   end
 end

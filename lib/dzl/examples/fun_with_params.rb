@@ -54,6 +54,12 @@ class Dzl::Examples::FunWithParams < Dzl::Examples::Base
     end
   end
 
+  endpoint '/api_proc' do
+    protect do
+      api_key header: 'x_api_key', validate_with: lambda {|key| key.match(/valid/)}
+    end
+  end
+
   endpoint '/arithmetic' do
     optional :int do
       type Fixnum

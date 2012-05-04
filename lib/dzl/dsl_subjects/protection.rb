@@ -29,13 +29,18 @@ class Dzl::DSLSubjects::Protection < Dzl::DSLSubject
 
     if @opts[:api_key].present?
       api_key_header = @opts[:api_key][:header]
-      allowed_keys = @opts[:api_key][:valid_keys]
       request_key = request.headers[api_key_header]
 
       if request_key
         # Invalid API key provided
-        unless allowed_keys.include? request_key
-          return Dzl::ValueOrError.new(e: :invalid_api_key)
+        if (valid_keys = @opts[:api_key][:valid_keys]).present?
+          unless valid_keys.include? request_key
+            return Dzl::ValueOrError.new(e: :invalid_api_key)
+          end
+        elsif (key_proc = @opts[:api_key][:validate_with]).present?
+          unless key_proc.call(request_key)
+            return Dzl::ValueOrError.new(e: :invalid_api_key)
+          end
         end
       # No API key provided
       else
