@@ -68,7 +68,7 @@ class Dzl::Request < Rack::Request
   protected
   def preformatted_params
     @preformatted_params ||= begin
-      if content_type == "application/json"
+      if content_type == "application/json" && !body.blank?
         JSON.parse(body).recursively_symbolize_keys!
       else
         {}

@@ -29,6 +29,13 @@ describe 'handlers' do
     end
   end
 
+  it "should handle empty body for content-type application/json" do 
+    get '/say_bar?baz=no&bam=nope&bar=Hello%2C%20world', '', {"CONTENT_TYPE" => "application/json"} do |response|
+      response.status.should == 200
+      response.body.should == 'Hello, world'
+    end    
+  end
+
   it 'calls error hooks on errors' do
     Object.should_receive(:first_error_hook)
     Object.should_receive(:second_error_hook)
