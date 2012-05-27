@@ -54,6 +54,19 @@ class Dzl::Examples::FunWithParams < Dzl::Examples::Base
     end
   end
 
+  get '/multi_endpoint_route' do
+    protect do
+      api_key header: 'x_api_key', valid_keys: ['valid-key']
+    end
+    handle{'OK'}
+  end
+
+  post '/multi_endpoint_route' do
+    required(:number) { type Fixnum }
+  end
+
+  put '/multi_endpoint_route'
+
   endpoint '/api_proc' do
     protect do
       api_key header: 'x_api_key', validate_with: lambda {|key| key.match(/valid/)}

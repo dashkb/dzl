@@ -189,6 +189,52 @@ describe Dzl::Examples::FunWithParams do
     end
   end
 
+  describe 'get /multi_endpoint_route' do
+    it 'should 401 if no api key provided' do
+      get '/multi_endpoint_route'
+      last_response.status.should == 401
+    end
+
+    it 'should 401 if invalid api key provided' do
+      get '/multi_endpoint_route', {}, {"HTTP_X_API_KEY" => 'invalid-key'}
+      last_response.status.should == 401
+    end
+
+    it 'should accept valid api key' do
+      get '/multi_endpoint_route', {}, {"HTTP_X_API_KEY" => 'valid-key'}
+      last_response.status.should == 200
+    end
+  end
+
+  describe 'post /multi_endpoint_route' do
+    it 'should not allow a request with no parameters in the body' do
+      header 'Content-Type', 'application/json'
+      post('/multi_endpoint_route', {}.to_json) do |response|
+        response.status.should == 404
+        JSON.parse(response.body)['errors']['/multi_endpoint_route'].should == {
+          'number' => 'missing_required_param'
+        }
+      end
+    end
+
+    it 'should not allow string instead of number' do
+      header 'Content-Type', 'application/json'
+      post('/multi_endpoint_route', {'number' => 'string'}.to_json) do |response|
+        response.status.should == 404
+        JSON.parse(response.body)['errors']['/multi_endpoint_route'].should == {
+          'number' => 'type_conversion_error'
+        }
+      end
+    end
+  end
+
+  describe 'put /multi_endpoint_route' do
+    it 'should return a valid response' do
+      put '/multi_endpoint_route', {}
+      last_response.status.should == 200
+    end
+  end
+
   describe '/api_proc' do
     it 'should 401 if no api key provided' do
       get '/api_proc'

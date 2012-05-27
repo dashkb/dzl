@@ -88,7 +88,11 @@ class Dzl::DSLSubjects::Router < Dzl::DSLSubject
           )
           true
         else
-          errors[endpoint.route] = validation.error
+          if validation.error == :request_method_not_supported
+            errors[endpoint.route] ||= :request_method_not_supported
+          else
+            errors[endpoint.route] = validation.error
+          end
           false
         end
       end
