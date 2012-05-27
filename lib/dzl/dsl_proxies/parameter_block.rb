@@ -61,8 +61,12 @@ class Dzl::DSLProxies::ParameterBlock < Dzl::DSLProxy
   def import_pblock(*pblocks)
     pblocks.each do |pblock|
       next unless @subject.router.pblocks.has_key?(pblock)
-      @subject.router.pblocks[pblock].params.each do |name, param|
+      pb = @subject.router.pblocks[pblock]
+      pb.params.each do |name, param|
         @subject.params[name] = param.clone
+      end
+      pb.opts.each do |name, opt|
+        @subject.opts[name] = opt.clone
       end
     end
   end
