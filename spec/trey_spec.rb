@@ -85,11 +85,11 @@ describe 'trey support' do
 
     it "understands time parameters" do
       get('/page_insights', req_params.merge({
-          since:"#{req_params[:since]}T00:00:00-05:00",
-          until:"#{req_params[:until]}T00:00:00-05:00",
+          since: Time.parse(req_params[:since]),
+          until: Time.parse(req_params[:until]),
         })) do |response|
         response.status.should == 200
-        JSON.parse(response.body)['params']['since'].should == '2012-01-01'
+        Time.parse(JSON.parse(response.body)['params']['since']).should == Time.parse('2012-01-01')
       end
     end
 

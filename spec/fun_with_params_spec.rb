@@ -110,7 +110,7 @@ describe Dzl::Examples::FunWithParams do
     it 'converts :bar to time' do
       get '/foo/2012-01-01' do |response|
         response.status.should == 200
-        JSON.parse(response.body)['params']['bar'].should == '2012-01-01T00:00:00-05:00'
+        Time.parse(JSON.parse(response.body)['params']['bar']).should == Time.parse('2012-01-01T00:00:00')
       end
     end
   end
