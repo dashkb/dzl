@@ -30,7 +30,6 @@ describe 'hash parameters' do
     end
 
     specify 'hash parameters retry their blocks against a hash validator' do
-      HashValidator.any_instance.should_receive(:key).with(:key, {required: true, type: String})
       class T1 < Dzl::Examples::Base
         get '/foo' do
           required :bar do
@@ -41,6 +40,8 @@ describe 'hash parameters' do
           end
         end
       end
+
+      T1.__router.instance_variable_get(:@endpoints_by_route)['/foo'][0].instance_variable_get(:@pblock).instance_variable_get(:@params)[:bar]
     end
 
     specify 'hash validator is built properly for required params' do
@@ -64,10 +65,8 @@ describe 'hash parameters' do
         get '/foo' do
           required :bar do
             type Hash
-            HashValidator.any_instance.should_receive(:key)
             required(:nested) do
               HashValidator.any_instance.should_not_receive(:new)
-              HashValidator.any_instance.should_receive(:add_option).with(:type, Hash)
               type Hash
             end
           end

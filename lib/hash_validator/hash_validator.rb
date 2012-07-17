@@ -1,15 +1,8 @@
-class HashValidator
-  attr_reader :dsl_proxy
-  attr_accessor :default_value
+require 'mzl'
 
-  class << self
-    alias_method :orig_new, :new
-    def new(*args)
-      v = orig_new(*args)
-      v.instance_exec(&Proc.new) if block_given?
-      v
-    end
-  end
+class HashValidator
+  attr_reader :dsl_proxy, :subject
+  attr_accessor :default_value
 
   def initialize(opts = {})
     @template = {
@@ -18,8 +11,9 @@ class HashValidator
     }
 
     @key_stack = []
-    @dsl_proxy = DSLProxy.new(self)
     @default_value = :__no_value__
+    @dsl_proxy = self # for Dzl, for now
+    @subject = self # for Dzl, for now
   end
 
   def opts
@@ -80,17 +74,6 @@ class HashValidator
     true
   end
 
-  def key(k, opts, &block)
-    top[:keys][k] = {
-      opts: opts,
-      keys: {}
-    }
-
-    @key_stack.push(k)
-    @dsl_proxy.instance_exec(&block) if block_given?
-    @key_stack.pop
-  end
-
   def top
     @key_stack.inject(@template) { |ref, key| ref[:keys][key] } || @template
   end
@@ -99,59 +82,61 @@ class HashValidator
     top[:opts][k] = v
   end
 
-  def method_missing(m, *args, &block)
-    if @dsl_proxy.respond_to?(m)
-      @dsl_proxy.send(m, *args, &block)
-    else
-      super(m, *args, &block)
+  mzl.defaults[:def][:persist] = true
+  mzl.override_new
+
+  mzl.def :key do |k, opts = {}, &block|
+    opts.reverse_merge!({
+      type: String
+    })
+
+    top[:keys][k] = {
+      opts: opts,
+      keys: {}
+    }
+
+    @key_stack.push(k)
+    instance_exec(&block) if block.is_a?(Proc)
+    @key_stack.pop
+  end
+
+  mzl.def :optional do |*args, &block|
+    opts = args.last.is_a?(Hash) ? args.pop : {}
+    args.each do |key|
+      key(key, opts.merge({required: false}), &block)
     end
   end
 
-  class DSLProxy
-    attr_reader :subject
+  mzl.def :required do |*args, &block|
+    opts = args.last.is_a?(Hash) ? args.pop : {}
+    args.each do |key|
+      key(key, opts.merge({required: true}), &block)
+    end
+  end
 
-    def initialize(subject)
-      @subject = subject
+  mzl.def :type do |klass|
+    raise ArgumentError unless klass.is_a?(Class)
+    add_option(:type, klass)
+  end
+
+  mzl.def :allowed_values do |*ary|
+    if ary.is_a?(Array) && ary[0].is_a?(Array) && ary.length == 1
+      ary = ary[0]
     end
 
-    def key(k, opts = {}, &block)
-      opts.reverse_merge!({
-        type: String
-      })
+    add_option(:allowed_values, ary)
+  end
 
-      @subject.key(k, opts, &block)
+  mzl.def :forbidden_values do |*ary|
+    if ary.is_a?(Array) && ary[0].is_a?(Array) && ary.length == 1
+      ary = ary[0]
     end
 
-    def optional(*args, &block)
-      opts = args.last.is_a?(Hash) ? args.pop : {}
-      args.each do |key|
-        key(key, opts.merge({required: false}), &block)
-      end
-    end
+    add_option(:forbidden_values, ary)
+  end
 
-    def required(*args, &block)
-      opts = args.last.is_a?(Hash) ? args.pop : {}
-      args.each do |key|
-        key(key, opts.merge({required: true}), &block)
-      end
-    end
-
-    def type(klass)
-      raise ArgumentError unless klass.is_a?(Class)
-      @subject.add_option(:type, klass)
-    end
-
-    def allowed_values(ary)
-      @subject.add_option(:allowed_values, ary)
-    end
-
-    def forbidden_values(ary)
-      @subject.add_option(:forbidden_values, ary)
-    end
-
-    def default(hsh)
-      raise ArgumentError unless hsh.is_a?(Hash)
-      @subject.default_value = hsh
-    end
+  mzl.def :default do |hsh|
+    raise ArgumentError unless hsh.is_a?(Hash)
+    @default_value = hsh
   end
 end

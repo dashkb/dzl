@@ -18,4 +18,5 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'rack', '~> 1.4.1'
   s.add_runtime_dependency 'activesupport', '~> 3.2.2'
+  s.add_runtime_dependency 'mzl', '~> 0.0.2'
 end
