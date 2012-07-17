@@ -4,6 +4,7 @@ gemspec
 gem 'pry'
 gem 'rake'
 gem 'rspec'
-gem 'thin'
+gem 'autotest-standalone'
+gem 'unicorn'
 gem 'rack-test'
 gem 'ruby-prof'

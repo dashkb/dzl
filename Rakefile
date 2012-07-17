@@ -8,7 +8,7 @@ end
 
 desc 'Boot the test app on localhost:3000'
 task :server do
-  exec 'rackup -p 3000'
+  exec 'unicorn -p 3000'
 end
 
 desc 'Run the specs'
