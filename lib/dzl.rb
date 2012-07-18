@@ -27,12 +27,6 @@ module Dzl
   end
 
   def self.included(base)
-    unless base.respond_to?(:root)
-      raise ArgumentError.new(
-        "Please define #{base}.root to return the path to your app"
-      )
-    end
-
     [:development?, :production?, :staging?, :test?].each do |m|
       define_singleton_method(m) do
         env == m.to_s[0..-2]
@@ -44,6 +38,12 @@ module Dzl
     class << base
       alias_method :orig_mm, :method_missing
       alias_method :orig_respond_to?, :respond_to?
+
+      unless method_defined?(:root)
+        def root
+          @__root ||= File.expand_path('../', ENV['BUNDLE_GEMFILE'])
+        end
+      end
 
       def __router
         @__router ||= Dzl::DSLSubjects::Router.new(self)
